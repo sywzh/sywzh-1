@@ -1,0 +1,45 @@
+@charset "UTF-8";
+/* CSS Document */
+
+body {
+	margin: 0;
+	font-family: "Microsoft Yahei",arial,"Hiragino Sans GB",sans-serif;
+	background: rgb(237,237,239);
+	background-size: cover;
+}
+
+.basetop{
+	height: 84px;
+	background: rgb(36,41,44);
+}
+
+.basetop span {
+	cursor: pointer;
+	font-size: 38px;
+	color: rgb(153,153,153);
+	display: inline-block;
+	margin: 14px 0px 0px 125px;
+}
+.menu {
+	font-size: 29px;
+	margin: -18px 50px 0px 685px;
+}
+
+.menu a {
+	text-align: center;
+	display: inline-block;
+	color: rgb(153,153,153);
+	text-decoration: none;
+}
+
+.menu a:hover {
+	color: rgb(255,255,255);
+}
+
+.menu a:active {
+	color: rgb(255,255,255);
+}
+
+.current:hover {
+	color: rgb(255,255,255);
+}

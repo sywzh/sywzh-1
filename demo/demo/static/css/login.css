@@ -1,0 +1,64 @@
+@charset "UTF-8";
+/* CSS Document */
+
+body {
+margin: 0;
+font-family: "Microsoft Yahei",arial,"Hiragino Sans GB",sans-serif;
+/*position: relative;*/
+background: url('../images/8.jpg') no-repeat fixed top center;
+background-size: cover;
+}
+
+.loginform{
+	width:504px;
+	height: 263px;
+	margin: 195px auto;
+	background: rgba(163, 160, 161, .4);
+}
+.loginform span {
+    cursor: pointer;
+    font-size: 38px;
+    color:black;
+    text-align: center;
+    display: inline-block;
+    width: 249px;
+}
+.current {
+    background-color: none;
+}
+.login-text {
+    width: 420px;
+    margin: auto;
+    display: block;
+}
+.loginform input {
+    border: none;
+    width: 420px;
+    height: 40px;
+    text-align: left;
+    margin: 8px 0;
+    line-height: 40px;
+    font-size: 18px;
+}
+.loginform button {
+    display: inline-block;
+    width: 420px;
+    background: #8DB800;
+    font-size: 24px;
+    color: white;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+}
+.loginform button:hover {
+    background: #1B9246;
+}
+
+.regist-text{
+    width: 420px;
+    margin: auto;
+    display: none;
+}
