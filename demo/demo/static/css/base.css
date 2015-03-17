@@ -21,8 +21,15 @@ body {
 	margin: 14px 0px 0px 125px;
 }
 .menu {
+    /*给他设置一个宽度，不要让它超出*/
+    width:570px;
+    position: relative;
+    top:-20px;
 	font-size: 29px;
-	margin: -18px 50px 0px 685px;
+	margin: -18px 50px 0px 590px;
+}
+.main {
+    margin-top: 30px;
 }
 
 .menu a {
