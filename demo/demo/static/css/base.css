@@ -10,6 +10,7 @@ body {
 
 .basetop{
 	height: 84px;
+	min-width: 1200px;
 	background: rgb(36,41,44);
 }
 
