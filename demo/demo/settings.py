@@ -135,6 +135,8 @@ INSTALLED_APPS = (
     'crispy_forms',
     'reversion',
     'User',
+    'Alg',
+    'Log',
 )
 
 # A sample logging configuration. The only tangible logging
