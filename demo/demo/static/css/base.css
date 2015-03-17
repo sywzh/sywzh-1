@@ -23,7 +23,7 @@ body {
 }
 .menu {
     /*给他设置一个宽度，不要让它超出*/
-    width:570px;
+    width:600px;
     position: relative;
     top:-20px;
     font-size: 29px;
