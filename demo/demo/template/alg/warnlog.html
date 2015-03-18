@@ -11,7 +11,7 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		$('#file_upload').uploadify({
-			'swf':'{{STATIC_URL}}/uploadify/uploadify.swf',
+			'swf':'{{STATIC_URL}}/uploadify/uploadify.swf?var='+(new Date()).getTime(),
 			'uploader':'{%url "Alg.views.uploadifyScript"%}',
 			'auto':false,
 			'multi':false,
