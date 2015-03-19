@@ -13,19 +13,23 @@
 		$('#file_upload').uploadify({
 			'swf':'{{STATIC_URL}}/uploadify/uploadify.swf?var='+(new Date()).getTime(),
 			'uploader':'{%url "Alg.views.uploadifyScript"%}',
+			'formData':{'someKey':'someValue','someOtherKey':1},
 			'auto':false,
 			'multi':false,
 			'buttonText':'请选择文件',
-			'fileTypeExts':'*.pdf; *.gif; *.jpg; *.png; *.doc;*.docx',
+			'fileTypeExts':'*.xml;*.xls;*.xlsx',
 			'removeCompleted':false,
 			'fileSizeLimit':10240000,
 			'fileTypeDesc':'支持文档格式',
 			'onInit':function(){},
+			'onUploadStart':function(file){
+				$("#file_upload").uploadify("settings","someOtherKey",2);
+			},
 			'onError':function(event,ID,fileObj,errorObj){
 				$('#id_span_msg').html("上传失败，错误码:"+errorObj.type+" "+errorObj.info);
 			},
 			'onUploadProgress':function(file,bytesUploaded,bytesTotal,totalBytesUploaded,totalBytesTotal){
-				$('#progress').html('已上传 ' +totalBytesUploaded + ' 字节. ' + '共 ' +totalBytesTotal + ' 字节.');
+				$('#progress').html('已上传 ' +totalBytesUploaded + ' 字节. ' + '共 ' +totalBytesTotal + ' 字节.');l
 			},
 			'onUploadSuccess':function(file,data,response){
 				if(response == true){

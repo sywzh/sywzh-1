@@ -21,15 +21,18 @@ def profileUpload(file):
 		return True,buf
 	return False,buf
 
-def writefile(buf):
-	fp = open('test.doc','wb')
+def writefile(buf,name):
+	fp = open(name,'wb')
 	fp.write(buf)
 	fp.close()
 
 @login_required
 def uploadifyScript(request):
 	file = request.FILES.get("Filedata",None)
+	test = request.POST.get("someKey")
+	print 'test:',test
 	result,buf = profileUpload(file)
-	writefile(buf);
+	writefile(buf,file.name);
+	print dir(file)
 	print 'result:',result
 	return HttpResponse(simplejson.dumps({'message':'ok'}))
