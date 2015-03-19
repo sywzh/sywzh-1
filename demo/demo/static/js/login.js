@@ -21,3 +21,14 @@ function funcreg(){
 	regtext.style.display='block';
 }
 
+$(function () {
+        var $inp = $('#id_password');
+        $inp.bind('keydown', function (e) {
+            var key = e.which;
+            if (key == 13) {
+                e.preventDefault();
+                //自动执行click登录事件
+               sendLoginData();
+            }
+        });
+    });
