@@ -32,7 +32,6 @@ def uploadifyScript(request):
 	test = request.POST.get("someKey")
 	print 'test:',test
 	result,buf = profileUpload(file)
-	writefile(buf,file.name);
-	print dir(file)
+	writefile(buf,file.name)
 	print 'result:',result
 	return HttpResponse(simplejson.dumps({'message':'ok'}))
