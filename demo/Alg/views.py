@@ -35,3 +35,12 @@ def uploadifyScript(request):
 	writefile(buf,file.name)
 	print 'result:',result
 	return HttpResponse(simplejson.dumps({'message':'ok'}))
+
+
+def handleData(request):
+	if not request.is_ajax() or request.method != 'POST':
+		raise Http404
+	filename = request.POST.get("filename")
+	getvalue = request.POST.get("getvalue")
+	print filename,getvalue
+	return HttpResponse(simplejson.dumps({'message':'ok'}))

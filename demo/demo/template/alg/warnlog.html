@@ -49,11 +49,29 @@
 				$('#id_span_msg').html("上传失败，错误码:"+errorObj.type+" "+errorObj.info);
 			},
 			'onUploadProgress':function(file,bytesUploaded,bytesTotal,totalBytesUploaded,totalBytesTotal){
-				$('#progress').html('已上传 ' +totalBytesUploaded + ' 字节. ' + '共 ' +totalBytesTotal + ' 字节.');l
+				$('#progress').html('已上传 ' +totalBytesUploaded + ' 字节. ' + '共 ' +totalBytesTotal + ' 字节.');
 			},
 			'onUploadSuccess':function(file,data,response){
 				if(response == true){
 					$('#file_upload').uploadify('settings','removeCompleted','true');
+					$.ajax({
+					type:"post",
+					dataType:"json",
+					contentType:"application/x-www-form-urlencoded;charset=UTF-8",
+					url:"{%url 'Alg.views.handleData'%}",
+					data:{
+						filename:file.name,
+						getvalue:getValue,
+					},
+					success:function(data){
+						var message = data.message;
+						if (message == "ok"){
+							alert("上传成功");
+						}else if(message == "error"){
+							alert("上传失败");
+						}
+					}
+				}) 
 				}
 			},
 			'onUploadError':function(file,errorCode,errorMsg,errorString){

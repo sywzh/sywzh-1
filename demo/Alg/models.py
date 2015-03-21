@@ -18,6 +18,17 @@ class Warn(models.Model):
 	start_time = models.DateTimeField()
 	end_time = models.DateTimeField()
 
+class WarnNine(models.Model):
+	classify = models.CharField(max_length = 10)
+	ipsrc = models.CharField(max_length = 16)
+	srcport = models.IntegerField()
+	srcname = models.CharField(max_length = 50)
+	ipdst = models.CharField(max_length = 16)
+	dstport = models.IntegerField()
+	deviceads = models.CharField(max_length = 16)
+	devicetype = models.CharField(max_length = 20)
+	event = models.CharField(max_length = 100)
+
 class Correlation(models.Model):
 	name = models.ForeignKey(WarnLog)
 	algorithm = models.CharField(max_length = 20)
