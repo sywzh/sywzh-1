@@ -1,9 +1,28 @@
 @charset "UTF-8";
 /* CSS Document */
 
-.bg-set1{
-	height: 878px;
-	width: 897px;
+.bg-set1 ,.loglist{
+	width: 1000px;
 	background: rgb(255,255,255);
 	margin: 0 auto;
+}
+.loglist {
+    margin: 30px auto;
+    padding: 30px 0;
+}
+.loglist h3 {
+    font-size: 24px;
+    color: #888;
+    margin-left: 30px;
+}
+.loglist table {
+    width: 500px;
+    margin: auto;
+    border-collapse: collapse;
+    border: none;
+}
+
+.loglist td, .loglist th {
+    border: 1px solid #000;
+    text-align: center;
 }
