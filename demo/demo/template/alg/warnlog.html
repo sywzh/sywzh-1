@@ -8,13 +8,13 @@
 <div class='bg-set1'>
 	<div class="demo-box">
 		<input id="file_upload" type="file" name="Filedata">
-		<a href="javascript:$('#file_upload').uploadify('upload','*')">Upload File</a>
+        <div class="in-jiuyuan"><input id="jiuyuan" type="checkbox" name="check" value="1">九院</input></div>
+
+        <a class="upload-now" href="javascript:$('#file_upload').uploadify('upload','*')">上传文件</a>
 		<div id="file_uploadQueue" class="uploadifyQueue"></div>
 		<p><span id="id_span_msg"></span></p>
 		<div id="progress"></div>
-		<div>
-			<input type="checkbox" name="check" value="1">九院</input>
-		</div>
+
 	</div>
 </div>
 
@@ -24,11 +24,18 @@
 <script type="text/javascript" src="{{STATIC_URL}}js/jquery.uploadify.min.js"></script>
 
 <script type="text/javascript">
-	var getValue = '0'
-	$('input[name="check"]:checked').each(function(){
-		getValue = $(this).val();
-		alert($(this).val());
-	});
+	var getValue = 0,
+        jiuyuan = $("#jiuyuan");
+    jiuyuan.change(function() {
+        if(jiuyuan.attr("checked")){
+            getValue = 1;
+        }else {
+            getValue = 0;
+        }
+        alert(getValue);
+    })
+
+
 	$(document).ready(function(){
 		$('#file_upload').uploadify({
 			'swf':'{{STATIC_URL}}/uploadify/uploadify.swf?var='+(new Date()).getTime(),
