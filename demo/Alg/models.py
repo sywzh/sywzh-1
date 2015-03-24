@@ -19,15 +19,19 @@ class Warn(models.Model):
 	end_time = models.DateTimeField()
 
 class WarnNine(models.Model):
+	user = models.ForeignKey(User)
+	name = models.CharField(max_length = 60)
+	systemtype = models.CharField(max_length = 15)
+	gettime = models.CharField(max_length = 20)
 	classify = models.CharField(max_length = 10)
 	ipsrc = models.CharField(max_length = 16)
-	srcport = models.IntegerField()
+	srcport = models.CharField(max_length=5)
 	srcname = models.CharField(max_length = 50)
 	ipdst = models.CharField(max_length = 16)
-	dstport = models.IntegerField()
+	dstport = models.CharField(max_length = 5)
 	deviceads = models.CharField(max_length = 16)
 	devicetype = models.CharField(max_length = 20)
-	event = models.CharField(max_length = 100)
+	event = models.CharField(max_length = 300)
 
 class Correlation(models.Model):
 	name = models.ForeignKey(WarnLog)

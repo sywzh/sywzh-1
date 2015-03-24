@@ -53,7 +53,6 @@
         }else {
             getValue = 0;
         }
-        alert(getValue);
     })
 
 
@@ -97,6 +96,12 @@
 							alert("上传成功");
 						}else if(message == "error"){
 							alert("上传失败");
+						}else if(message == "formerror"){
+							alert("上传文件格式错误 仅上传xls、xlsx格式");
+						}else if(message == "attrerror"){
+							alert("约定段属性错误，上传失败");
+						}else if(message == "uploaded"){
+							alert("该文件已上传或文件同名");
 						}
 					}
 				}) 
