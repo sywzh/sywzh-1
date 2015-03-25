@@ -68,9 +68,9 @@ def handleData(request):
 	filename = request.POST.get("filename")
 	getvalue = request.POST.get("getvalue")
 	username = request.user
-	if WarnLog.objects.filter(user_id = username.id,name = filename).count()>0:
-		dropFile(filename)
-		return HttpResponse(simplejson.dumps({'message':'uploaded'}))
+	#if WarnLog.objects.filter(user_id = username.id,name = filename).count()>0:
+	#	dropFile(filename)
+	#	return HttpResponse(simplejson.dumps({'message':'uploaded'}))
 	if getvalue == '1':
 		if filename[-3:] == 'xls' or filename[-4:] == 'xlsx':
 			try:

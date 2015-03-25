@@ -16,8 +16,12 @@
 		<div id="progress"></div>
 
 	</div>
-</div>
 
+
+</div>
+<div class="tip">
+	<p>正在处理ing!!!</p>
+</div>
 <div class="loglist">
     <h3>日志列表</h3>
     <div class="log-table">
@@ -81,6 +85,10 @@
 			'onUploadSuccess':function(file,data,response){
 				if(response == true){
 					$('#file_upload').uploadify('settings','removeCompleted','true');
+
+                    $(document).ajaxStart(function(){
+                       $(".tip").show(300);
+                    });
 					$.ajax({
 					type:"post",
 					dataType:"json",
@@ -88,7 +96,7 @@
 					url:"{%url 'Alg.views.handleData'%}",
 					data:{
 						filename:file.name,
-						getvalue:getValue,
+						getvalue:getValue
 					},
 					success:function(data){
 						var message = data.message;
@@ -104,7 +112,8 @@
 							alert("该文件已上传或文件同名");
 						}
 					}
-				}) 
+				});
+                    $(document).ajaxStop(function(){$(".tip").hide(300);})
 				}
 			},
 			'onUploadError':function(file,errorCode,errorMsg,errorString){

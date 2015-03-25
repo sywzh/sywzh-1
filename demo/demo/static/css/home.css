@@ -1,7 +1,8 @@
 @charset "UTF-8";
 /* CSS Document */
 
-.bg-set1 ,.loglist{
+.bg-set1 ,.loglist, .tip{
+    position: relative;
 	width: 1000px;
 	background: rgb(255,255,255);
 	margin: 0 auto;
@@ -25,4 +26,11 @@
 .loglist td, .loglist th {
     border: 1px solid #000;
     text-align: center;
+}
+.tip {
+    display: none;
+}
+.tip p {
+    text-align: center;
+    padding: 10px 0;
 }
