@@ -71,7 +71,7 @@ body {
 .current:hover {
 	color: rgb(255,255,255);
 }
-.upload-now {
+.upload-now ,.handle-now {
     display: block;
     width: 80px;
     height: 30px;

@@ -8,35 +8,57 @@
 <div class='bg-set1'>
 	<div class="demo-box">
 		<input id="file_upload" type="file" name="Filedata">
-        <div class="in-jiuyuan"><input id="jiuyuan" type="checkbox" name="check" value="1">九院</input></div>
-
-        <a class="upload-now" href="javascript:$('#file_upload').uploadify('upload','*')">上传文件</a>
+		<div class="in-jiuyuan">
+			<input id="jiuyuan" type="checkbox" name="check" value="1">九院</input>
+		</div>
+		<a class="upload-now" href="javascript:$('#file_upload').uploadify('upload','*')">上传文件</a>
 		<div id="file_uploadQueue" class="uploadifyQueue"></div>
 		<p><span id="id_span_msg"></span></p>
 		<div id="progress"></div>
 	</div>
-
-
 </div>
 <div class="tip">
 	<p>正在处理ing!!!</p>
 </div>
+<div class="handle">
+	<select class="choose-suanfa">
+		<option value="1">算法1</option>
+		<option value="2">算法2</option>
+		<option value="3">算法3</option>
+		<option value="4">算法4</option>
+	</select>
+	<p>设定支持度:<input type="text"></p>
+	<input type="checkbox" value="1">设定时间阈值</input>
+	<input type="checkbox" value="1">设定可信度</input>
 
+	<div class="handle-now">关联分析</div>
+</div>
+<div class="chart">
+	<select class="choose-chart">
+		<option value="line">折线图</option>
+		<option value="pie">圆饼图</option>
+		<option value="column">柱状图</option>
+	</select>
+	<div id="chart-main">
+		
+	</div>
+</div>
 <script type="text/javascript" src="{{STATIC_URL}}js/jquery.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/swfobject.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/jquery.uploadify.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/jquery.uploadify.min.js"></script>
-
+<script type="text/javascript" src="{{STATIC_URL}}js/chart/highcharts.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/chart/modules/exporting.js"></script>
 <script type="text/javascript">
 	var getValue = 0,
-        jiuyuan = $("#jiuyuan");
-    jiuyuan.change(function() {
-        if(jiuyuan.attr("checked")){
-            getValue = 1;
-        }else {
-            getValue = 0;
-        }
-    })
+	jiuyuan = $("#jiuyuan");
+	jiuyuan.change(function() {
+		if(jiuyuan.attr("checked")){
+			getValue = 1;
+		}else {
+			getValue = 0;
+		}
+	})
 
 
 	$(document).ready(function(){
@@ -71,8 +93,52 @@
 			}
 
 		});
-	});
+});
 </script>
-
+<script>
+	$(function(){
+		var type = "line";
+		function chart(){
+			new Highcharts.Chart({
+				chart : {
+					type : type,
+					renderTo : "chart-main"
+				},
+				title : {
+					text : "日志分析图"
+				},
+				xAxis : {
+					categories : ["Chrome","ie","firfox","safari","other"]
+				},
+				yAxis : {
+					title : {
+						text : "数据百分比"
+					}
+				},
+				series : [{
+					allowPointSelect: true,
+					name : "hockor",
+					data :  [
+					['Firefox',   45.0],
+					['Safari',8.5],
+					['IE',       26.8],
+					{
+						name: 'Chrome',
+						y: 12.8,
+						sliced: true,
+					},
+					['Opera',6.2],
+					['Others',0.7]
+					]
+				}]
+			})
+		}
+		chart();
+		$(".choose-chart").change(function(){
+			type = $(this).find("option:selected").val();
+			chart();
+		})
+	})
+</script>
 
 {%endblock%}

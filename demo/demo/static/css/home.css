@@ -1,7 +1,8 @@
 @charset "UTF-8";
 /* CSS Document */
 
-.bg-set1 ,.loglist, .tip{
+.bg-set1 ,.loglist, .tip ,
+.handle , .chart{
     position: relative;
 	width: 1000px;
 	background: rgb(255,255,255);
@@ -33,4 +34,31 @@
 .tip p {
     text-align: center;
     padding: 10px 0;
+}
+.handle {
+    margin: 30px auto;
+    text-align: center;
+}
+.handle select,
+.handle input,
+.handle p {
+    display: inline-block;
+    margin: 20px 0;
+}
+.handle .handle-now {
+    margin: auto;
+    cursor: pointer;
+}
+.chart {
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+    margin: 30px auto;
+    padding: 30px;
+}
+
+#chart-main {
+    width: 800px;
+    height: 400px;
+    margin: 10px auto
 }
