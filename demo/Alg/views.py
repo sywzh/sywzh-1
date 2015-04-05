@@ -34,8 +34,12 @@ def writefile(buf,name):
 @login_required
 def uploadifyScript(request):
 	file = request.FILES.get("Filedata",None)
-	result,buf = profileUpload(file)
-	writefile(buf,file.name)
+	if WarnLog.objects.filter(user_id = request.user.id,name = file.name).count()>0:
+		pass
+	else:
+		result,buf = profileUpload(file)
+		print 'result:',result
+		writefile(buf,file.name)
 	return HttpResponse(simplejson.dumps({'message':'ok'}))
 
 def dropFile(name):
@@ -46,21 +50,50 @@ def storageFile(name,user):
 	data = xlrd.open_workbook(name)
 	table = data.sheets()[0]
 	nrows = table.nrows
-	ncols = table.ncols
 	for i in range(1,nrows):
-		'''
-		print user.id,name
-		print table.row_values(i)[0],table.row_values(i)[1],table.row_values(i)[2],\
-		table.row_values(i)[3],table.row_values(i)[4],table.row_values(i)[5],\
-		table.row_values(i)[6],table.row_values(i)[7],table.row_values(i)[8],\
-		table.row_values(i)[9],len(table.row_values(i)[10])
-		'''
 		op = WarnNine(user_id = user.id,name = name,systemtype = table.row_values(i)[0],\
 		gettime = table.row_values(i)[1],classify = table.row_values(i)[2],ipsrc = table.row_values(i)[3],\
 		srcport = table.row_values(i)[4],srcname = table.row_values(i)[5],ipdst = table.row_values(i)[6],\
 		dstport = table.row_values(i)[7],deviceads = table.row_values(i)[8],devicetype = \
 		table.row_values(i)[9],event = table.row_values(i)[10] )
 		op.save()
+
+def storageFiles(name,username):
+	data = xlrd.open_workbook(name)
+	table = data.sheets()[0]
+	nrows = table.nrows
+	attrs = table.row_values(0)
+	print attrs
+
+def handleFile(filename,username,getvalue):
+	if getvalue == '1':
+		if filename[-3:] == 'xls' or filename[-4:] == 'xlsx':
+			try:
+				storageFile(filename,username)
+			except:
+				dropFile(filename)
+				return '1'
+		else:
+			return '2'
+	if getvalue == '0':
+		if filename[-3:] == 'xls' or filename[-4:] == 'xlsx':
+			try:
+
+				storageFiles(filename,username)
+			except:
+				#dropFile(filename)
+				return "1"
+		elif filename[-3:] == 'xml':
+			try:
+				storageXML(filename,username)
+			except:
+				dropFile(filename)
+				return "1"
+		else:
+			return "2"
+	op = WarnLog(user_id = username.id,name = filename)
+	op.save()
+	return 0
 
 def handleData(request):
 	if not request.is_ajax() or request.method != 'POST':
@@ -69,19 +102,17 @@ def handleData(request):
 	getvalue = request.POST.get("getvalue")
 	username = request.user
 	#if WarnLog.objects.filter(user_id = username.id,name = filename).count()>0:
-	#	dropFile(filename)
 	#	return HttpResponse(simplejson.dumps({'message':'uploaded'}))
-	if getvalue == '1':
-		if filename[-3:] == 'xls' or filename[-4:] == 'xlsx':
-			try:
-				storageFile(filename,username)
-				op = WarnLog(user_id = username.id,name = filename)
-				op.save()
-			except:
-				dropFile(filename)
-				return HttpResponse(simplejson.dumps({'message':'attrerror'}))
-		else:
-			return HttpResponse(simplejson.dumps({'message':'formerror'}))
-		
-	print filename,getvalue
+	flag = handleFile(filename,username,getvalue)
+	if flag == "1":
+		return HttpResponse(simplejson.dumps({'message':'attrerror'}))
+	elif flag == "2":
+		return HttpResponse(simplejson.dumps({'message':'formerror'}))		
 	return HttpResponse(simplejson.dumps({'message':'ok'}))
+
+
+@login_required
+@lrender('alg/connect.html')
+def connectHd(request):
+	return {}
+

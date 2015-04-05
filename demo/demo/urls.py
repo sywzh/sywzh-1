@@ -20,6 +20,7 @@ urlpatterns = patterns('',
     url(r'^alg/$','Alg.views.warnLog'),
     url(r'^uploadifyscript/$','Alg.views.uploadifyScript'),
     url(r'^handledata/$','Alg.views.handleData'),
+    url(r'^connect/$','Alg.views.connectHd'),
     # url(r'^demo/', include('demo.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

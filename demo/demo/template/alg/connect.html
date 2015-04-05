@@ -1,0 +1,78 @@
+{%extends 'base.html'%}
+
+{%block t_body%}
+{% load static %}{% get_static_prefix as STATIC_URL %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/home.css"/>
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/uploadify.css">
+
+<div class='bg-set1'>
+	<div class="demo-box">
+		<input id="file_upload" type="file" name="Filedata">
+        <div class="in-jiuyuan"><input id="jiuyuan" type="checkbox" name="check" value="1">九院</input></div>
+
+        <a class="upload-now" href="javascript:$('#file_upload').uploadify('upload','*')">上传文件</a>
+		<div id="file_uploadQueue" class="uploadifyQueue"></div>
+		<p><span id="id_span_msg"></span></p>
+		<div id="progress"></div>
+	</div>
+
+
+</div>
+<div class="tip">
+	<p>正在处理ing!!!</p>
+</div>
+
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/swfobject.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery.uploadify.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery.uploadify.min.js"></script>
+
+<script type="text/javascript">
+	var getValue = 0,
+        jiuyuan = $("#jiuyuan");
+    jiuyuan.change(function() {
+        if(jiuyuan.attr("checked")){
+            getValue = 1;
+        }else {
+            getValue = 0;
+        }
+    })
+
+
+	$(document).ready(function(){
+		$('#file_upload').uploadify({
+			'swf':'{{STATIC_URL}}/uploadify/uploadify.swf?var='+(new Date()).getTime(),
+			'uploader':'{%url "Alg.views.uploadifyScript"%}',
+			'formData':{'someKey':getValue,'someOtherKey':1},
+			'auto':false,
+			'multi':false,
+			'buttonText':'请选择文件',
+			'fileTypeExts':'*.xml;*.xls;*.xlsx',
+			'removeCompleted':false,
+			'fileSizeLimit':10240000,
+			'fileTypeDesc':'支持文档格式',
+			'onInit':function(){},
+			'onUploadStart':function(file){
+				$("#file_upload").uploadify("settings","someOtherKey",2);
+			},
+			'onError':function(event,ID,fileObj,errorObj){
+				$('#id_span_msg').html("上传失败，错误码:"+errorObj.type+" "+errorObj.info);
+			},
+			'onUploadProgress':function(file,bytesUploaded,bytesTotal,totalBytesUploaded,totalBytesTotal){
+				$('#progress').html('已上传 ' +totalBytesUploaded + ' 字节. ' + '共 ' +totalBytesTotal + ' 字节.');
+			},
+			'onUploadSuccess':function(file,data,response){
+				if(response == true){
+					$('#file_upload').uploadify('settings','removeCompleted','true');
+				}
+			},
+			'onUploadError':function(file,errorCode,errorMsg,errorString){
+				alert('文件 ' + file.name + '上传失败.' + ' 详细信息: ' + errorString);
+			}
+
+		});
+	});
+</script>
+
+
+{%endblock%}
