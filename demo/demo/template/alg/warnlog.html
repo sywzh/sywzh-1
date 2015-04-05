@@ -89,7 +89,7 @@
                     $(document).ajaxStart(function(){
                        $(".tip").show(300);
                     });
-					$.ajax({
+				$.ajax({
 					type:"post",
 					dataType:"json",
 					contentType:"application/x-www-form-urlencoded;charset=UTF-8",
@@ -113,7 +113,9 @@
 						}
 					}
 				});
-                    $(document).ajaxStop(function(){$(".tip").hide(300);})
+                    $(document).ajaxStop(function(){
+                    	$(".tip").hide(300);
+                    	})
 				}
 			},
 			'onUploadError':function(file,errorCode,errorMsg,errorString){
