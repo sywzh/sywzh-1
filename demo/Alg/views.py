@@ -11,6 +11,7 @@ from Alg.models import *
 import xlrd
 import os
 from trans import manageData
+import json
 
 @lrender('alg/warnlog.html')
 @login_required
@@ -131,6 +132,13 @@ def dataAnalysis(request):
 	minConf = request.POST.get("minConf")
 	try:
 		key,value,results = manageData(name,minSupport,minConf)
-		return HttpResponse(simplejson({'message':'ok','key':key,'value':value,"results":results}))
+		print 'hahahah'
+		print 'asdsd:',key,value,results
+		key = json.dumps(key)
+		value = json.dumps(value)
+		results = json.dumps(results)
+		print key,value,results
+
+		return HttpResponse(simplejson.dumps({'message':'ok','key':key,'value':value,"results":results}))
 	except:
-		return HttpResponse(simplejson({'message':'error'}))
+		return HttpResponse(simplejson.dumps({'message':'error'}))

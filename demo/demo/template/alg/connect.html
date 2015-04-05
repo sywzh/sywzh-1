@@ -27,21 +27,19 @@
 		<option value="3">算法3</option>
 		<option value="4">算法4</option>
 	</select>
-	<p>设定支持度:<input type="text"></p>
-	<input type="checkbox" value="1">设定时间阈值</input>
-	<input type="checkbox" value="1">设定可信度</input>
-
+	<p>设定支持度:<input type="text" class="minSupport"></p>
+	<p>设定可信度:<input type="text" class="minConf"></p>
 	<div class="handle-now">关联分析</div>
 </div>
 <div class="chart">
 	<select class="choose-chart">
 		<option value="line">折线图</option>
-		<option value="pie">圆饼图</option>
 		<option value="column">柱状图</option>
 	</select>
 	<div id="chart-main">
 		
 	</div>
+	<div class="chart-tip"></div>
 </div>
 <script type="text/javascript" src="{{STATIC_URL}}js/jquery.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/swfobject.js"></script>
@@ -75,6 +73,8 @@
 			'fileTypeDesc':'支持文档格式',
 			'onInit':function(){},
 			'onUploadStart':function(file){
+				window.fileName = file.name;
+
 				$("#file_upload").uploadify("settings","someOtherKey",2);
 			},
 			'onError':function(event,ID,fileObj,errorObj){
@@ -90,16 +90,17 @@
 			},
 			'onUploadError':function(file,errorCode,errorMsg,errorString){
 				alert('文件 ' + file.name + '上传失败.' + ' 详细信息: ' + errorString);
+				
 			}
 
+			
 		});
-});
-</script>
-<script type="text/javascript">
-	function getData(){
-        var name = 
-        var minSupport = 
-        var minConf = 
+
+	$(".handle-now").click(function(){
+        var name =  fileName;
+        var minSupport =  $(".minSupport").val();
+        var minConf = $(".minConf").val();
+
         $.ajax({
             type:"post",
             dataType:"json",
@@ -111,51 +112,53 @@
                 minConf:minConf
             },
             success:function(data){
+            	var chartresult = JSON.parse(data.results);
+
+			var arr = "",rr = "",str = "",trr = "";
+			for (var i = 0; i < chartresult.length; i++) {
+				s= chartresult[i];
+				for(var j = 0; j < s.length; j++){
+					if(j < s.length-1){
+						arr += s[j]+"=>";
+					}
+					else if(j = s.length-1){
+						trr = " : "+s[j] +"<br>";
+					}
+					rr = arr + trr;
+				}
+				arr = "";
+				str +=rr;
+			}
+			$(".chart-tip").html(str);
                 var message = data.message;
                 if (message == "ok"){
-                    alert("成功");
-                }else if(message == "error"){
-                    alert("失败");
-                }
-            }
-        }) 
-    }
-</script>
-<script>
-	$(function(){
-		var type = "line";
+                    //alert("成功");
+                    $(".chart").fadeIn(300);
+                    var type = "line";
+                    
 		function chart(){
+			var chartdata = JSON.parse(data.value);
+			var categorie = JSON.parse(data.key);
 			new Highcharts.Chart({
 				chart : {
 					type : type,
 					renderTo : "chart-main"
 				},
 				title : {
-					text : "日志分析图"
+					text : "数据分析图"
 				},
 				xAxis : {
-					categories : ["Chrome","ie","firfox","safari","other"]
+					categories : categorie
 				},
 				yAxis : {
 					title : {
-						text : "数据百分比"
+						text : "数据比例"
 					}
 				},
 				series : [{
 					allowPointSelect: true,
-					name : "hockor",
-					data :  [
-					['Firefox',   45.0],
-					['Safari',8.5],
-					['IE',       26.8],
-					{
-						name: 'Chrome',
-						y: 12.8,
-						sliced: true,
-					},
-					['Opera',6.2],
-					['Others',0.7]
-					]
+					name : "多源告警信息关联分析系统",
+					data :  chartdata
 				}]
 			})
 		}
@@ -164,6 +167,20 @@
 			type = $(this).find("option:selected").val();
 			chart();
 		})
+                }else if(message == "error"){
+                    alert("失败");
+                }
+
+
+            }
+        }) 
+	})
+
+});
+</script>
+<script>
+	$(function(){
+		
 	})
 </script>
 
