@@ -10,6 +10,7 @@ from django.utils import simplejson
 from Alg.models import *
 import xlrd
 import os
+from trans import manageData
 
 @lrender('alg/warnlog.html')
 @login_required
@@ -116,3 +117,20 @@ def handleData(request):
 def connectHd(request):
 	return {}
 
+@login_required
+@lrender('alg/connect.html')
+def connectHd(request):
+	return {}
+
+@login_required
+def dataAnalysis(request):
+	if not request.is_ajax() or request.method != 'POST':
+		raise Http404
+	name = request.POST.get("name")
+	minSupport = request.POST.get("minSupport")
+	minConf = request.POST.get("minConf")
+	try:
+		key,value,results = manageData(name,minSupport,minConf)
+		return HttpResponse(simplejson({'message':'ok','key':key,'value':value,"results":results}))
+	except:
+		return HttpResponse(simplejson({'message':'error'}))
