@@ -89,3 +89,9 @@ body {
     position: relative;
 
 }
+.chart-tip {
+    text-align: center;
+    color: #00640C;
+    font-size: 16px;
+    line-height: 34px;
+}
