@@ -30,8 +30,10 @@ def writefile(buf,name):
 	fp = open(name,'wb')
 	fp.write(buf)
 	fp.close()
+	print 'testtesttest...'
 	cmd = 'chmod 777 ' + name
 	os.system(cmd)
+	print 'testtesttest'
 
 @login_required
 def uploadifyScript(request):
@@ -132,13 +134,40 @@ def dataAnalysis(request):
 	minConf = request.POST.get("minConf")
 	try:
 		key,value,results = manageData(name,minSupport,minConf)
-		print 'hahahah'
-		print 'asdsd:',key,value,results
 		key = json.dumps(key)
 		value = json.dumps(value)
 		results = json.dumps(results)
-		print key,value,results
-
 		return HttpResponse(simplejson.dumps({'message':'ok','key':key,'value':value,"results":results}))
 	except:
 		return HttpResponse(simplejson.dumps({'message':'error'}))
+
+def traversal(attrs,name):
+	attrs = [[u"FW-NAT",u"dos攻击"],[u"dos攻击",u"FW-NAT"]]
+	connect = []
+	result = []
+	data = xlrd.open_workbook('event1.xls')
+	table = data.sheets()[0]
+	for attr in attrs:
+		for i in range(table.nrows):
+			flag = 0
+			for j in range(len(attr)):
+				if(attr[j] in table.row_values(i+flag)):
+					flag = flag + 1
+				if (flag == len(attr)):
+					for k in range(i,i+flag):
+						connect.append(table.row_values(k))
+				else:
+					continue
+		result.append(connect)
+	return result
+
+@login_required
+def getAttr(request):
+	if not request.is_ajax() or request.method != 'POST':
+		raise Http404
+	attrs = [[u"FW-NAT",u"dos攻击"],[u"dos攻击",u"FW-NAT"]]
+	name = "event1.xls"
+	print 'test:',name
+	result = traversal(attrs,name)
+	print result
+	return HttpResponse(simplejson.dumps({'message':result}))

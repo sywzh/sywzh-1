@@ -180,13 +180,13 @@ $(".handle-now").click(function(){
                 		type:"post",
                 		dataType:"json",
                 		contentType:"application/x-www-form-urlencoded;charset=UTF-8",
-                		url:"",
+                		url:"{%url 'Alg.views.getAttr'%}",
                 		data: {
                 			fileName : fileName,
                 			results : chartresults
                 		},
                 		success : function(data){
-
+                			alert(data.message);
                 		},
                 		error : function(){
 
