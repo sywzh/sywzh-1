@@ -166,22 +166,14 @@
 		$(".choose-chart").change(function(){
 			type = $(this).find("option:selected").val();
 			chart();
-		})
-                }else if(message == "error"){
+			})
+          }else if(message == "error"){
                     alert("失败");
                 }
-
-
             }
         }) 
 	})
 
 });
 </script>
-<script>
-	$(function(){
-		
-	})
-</script>
-
 {%endblock%}
