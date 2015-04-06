@@ -36,10 +36,12 @@
 		<option value="line">折线图</option>
 		<option value="column">柱状图</option>
 	</select>
-	<div id="chart-main">
-		
-	</div>
+	<div id="chart-main">	</div>
 	<div class="chart-tip"></div>
+
+	<div class="guanlian">
+		<span class="guanlian-btn"></span>
+	</div>
 </div>
 <script type="text/javascript" src="{{STATIC_URL}}js/jquery.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/swfobject.js"></script>
@@ -96,24 +98,24 @@
 			
 		});
 
-	$(".handle-now").click(function(){
-        var name =  fileName;
-        var minSupport =  $(".minSupport").val();
-        var minConf = $(".minConf").val();
+$(".handle-now").click(function(){
+	var name =  fileName;
+	var minSupport =  $(".minSupport").val();
+	var minConf = $(".minConf").val();
 
-        $.ajax({
-            type:"post",
-            dataType:"json",
-            contentType:"application/x-www-form-urlencoded;charset=UTF-8",
-            url:"{%url 'Alg.views.dataAnalysis'%}",
-            data:{
-                name:name,
-                minSupport:minSupport,
-                minConf:minConf
-            },
-            success:function(data){
-            	var chartresult = JSON.parse(data.results);
-
+	$.ajax({
+		type:"post",
+		dataType:"json",
+		contentType:"application/x-www-form-urlencoded;charset=UTF-8",
+		url:"{%url 'Alg.views.dataAnalysis'%}",
+		data:{
+			name:name,
+			minSupport:minSupport,
+			minConf:minConf
+		},
+		success:function(data){
+			window.chartresults = data.results;
+			var chartresult = JSON.parse(data.results);
 			var arr = "",rr = "",str = "",trr = "";
 			for (var i = 0; i < chartresult.length; i++) {
 				s= chartresult[i];
@@ -130,50 +132,70 @@
 				str +=rr;
 			}
 			$(".chart-tip").html(str);
-                var message = data.message;
-                if (message == "ok"){
+			var message = data.message;
+			if (message == "ok"){
                     //alert("成功");
                     $(".chart").fadeIn(300);
                     var type = "line";
                     
-		function chart(){
-			var chartdata = JSON.parse(data.value);
-			var categorie = JSON.parse(data.key);
-			new Highcharts.Chart({
-				chart : {
-					type : type,
-					renderTo : "chart-main"
-				},
-				title : {
-					text : "数据分析图"
-				},
-				xAxis : {
-					categories : categorie
-				},
-				yAxis : {
-					title : {
-						text : "数据比例"
-					}
-				},
-				series : [{
-					allowPointSelect: true,
-					name : "多源告警信息关联分析系统",
-					data :  chartdata
-				}]
-			})
-		}
-		chart();
-		$(".choose-chart").change(function(){
-			type = $(this).find("option:selected").val();
-			chart();
-			})
-          }else if(message == "error"){
-                    alert("失败");
+                    function chart(){
+                    	var chartdata = JSON.parse(data.value);
+                    	var categorie = JSON.parse(data.key);
+                    	new Highcharts.Chart({
+                    		chart : {
+                    			type : type,
+                    			renderTo : "chart-main"
+                    		},
+                    		title : {
+                    			text : "数据分析图"
+                    		},
+                    		xAxis : {
+                    			categories : categorie
+                    		},
+                    		yAxis : {
+                    			title : {
+                    				text : "数据比例"
+                    			}
+                    		},
+                    		series : [{
+                    			allowPointSelect: true,
+                    			name : "多源告警信息关联分析系统",
+                    			data :  chartdata
+                    		}]
+                    	})
+                    }
+                    chart();
+                    $(".choose-chart").change(function(){
+                    	type = $(this).find("option:selected").val();
+                    	chart();
+                    })
+                }else if(message == "error"){
+                	alert("失败");
                 }
+
+                
+                //显示关联属性
+                $(".guanlian-btn").click(function(){
+                	$.ajax({
+                		type:"post",
+                		dataType:"json",
+                		contentType:"application/x-www-form-urlencoded;charset=UTF-8",
+                		url:"",
+                		data: {
+                			fileName : fileName,
+                			results : chartresults
+                		},
+                		success : function(data){
+
+                		},
+                		error : function(){
+
+                		}
+                	})
+                })
             }
         }) 
 	})
-
 });
 </script>
 {%endblock%}
