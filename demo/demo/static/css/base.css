@@ -43,10 +43,9 @@ body {
 	text-decoration: none;
 }
 .demo-box {
-    width: 290px;
-    margin: auto;
-    position: relative;
-    top: 20px;
+    width: 300px;
+  margin: auto;
+  padding: 20px;
 }
 .menu a:hover {
 	color: rgb(255,255,255);

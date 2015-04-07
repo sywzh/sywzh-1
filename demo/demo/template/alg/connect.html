@@ -43,6 +43,12 @@
 		<p class="guanlian-btn">显示关联属性</p>
 	</div>
 </div>
+
+<div class="show-guanlian">
+	<table class="table">	</table>	
+	<a href="javascript:void(0);" id="prev">上一页</a>	
+	<a href="javascript:void(0);" id="next">下一页</a>
+</div>
 <script type="text/javascript" src="{{STATIC_URL}}js/jquery.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/swfobject.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/jquery.uploadify.js"></script>
@@ -173,7 +179,6 @@ $(".handle-now").click(function(){
                 	alert("失败");
                 }
 
-
                 //显示关联属性
                 $(".guanlian-btn").click(function(){
                 	$.ajax({
@@ -186,7 +191,80 @@ $(".handle-now").click(function(){
                 			results : chartresults
                 		},
                 		success : function(data){
-                			alert(data.message);
+                			$(".show-guanlian").show();
+                			var data = data.message;
+                			var  d = [];
+
+                			for(var i = 0; i < data.length; i++){
+                				for(var j = 0; j < data[i].length; j++){
+                					d.push(data[i][j]);
+                				}
+                			}
+
+                			var page = Math.ceil((d.length/99));
+                			var countPage = 1;
+                			var l = d.length;
+                			var m = d[0].length
+                			$("#prev").hide();
+                			function show(){
+                				$(".table").empty();
+                				var th = $("<th><td>系统类型</td><td>接收时间</td><td>等级</td><td>源地址</td><td>源端口</td><td>源用户名称</td><td>目的地址</td><td>目的端口</td><td>设备地址</td><td>设备类型</td><td>事件名称</td></th>");
+                				$(".table").append(th);
+                				if(countPage < page){
+                					for(var i=0;i<99;i++){
+
+                						$(".table").append("<tr></tr>");
+                						var b = document.createElement("td");
+                						b.innerHTML = (countPage-1)*99+i+1;
+                						$(".table tr")[i].appendChild(b);
+
+                						for(var j = 0;j<m;j++){
+                							var a = document.createElement("td");
+                							a.innerHTML = d[(countPage-1)*99+i][j];
+                							$(".table tr")[i].appendChild(a);
+                						}
+                					}
+                				}else{
+                					for(var i=0;i<d.length-(page-1)*99;i++){
+                						$("#prev").show();
+                						$(".table").append("<tr></tr>");
+                						var b = document.createElement("td");
+                						b.innerHTML = (countPage-1)*99+i+1;
+                						$(".table tr")[i].appendChild(b);
+
+                						for(var j = 0;j<m;j++){
+                							var a = document.createElement("td");
+                							a.innerHTML = d[(countPage-1)*99+i][j];
+                							$(".table tr")[i].appendChild(a);
+                						}
+                					}
+                				}
+                			}
+
+                			console.log(page);
+                			$("#prev").click(function(){
+                				if(countPage != 1){
+                					countPage--;
+                					show();
+                				}else {
+                					$("#prev").hide();
+                				} if(countPage !== page){
+                					$("#next").show();
+                				}
+                			})
+
+                			$("#next").click(function(){
+
+                				if(countPage == page){
+                					$("#next").hide();
+                				}else{
+                					countPage++;
+                					$("#prev").show();
+                					show();
+                					console.log(countPage);
+                				}
+                			})
+                			show(); 
                 		},
                 		error : function(){
 

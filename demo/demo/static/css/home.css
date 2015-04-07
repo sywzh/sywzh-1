@@ -2,13 +2,13 @@
 /* CSS Document */
 
 .bg-set1 ,.loglist, .tip ,
-.handle , .chart{
+.handle , .chart , .show-guanlian{
     position: relative;
 	width: 1000px;
 	background: rgb(255,255,255);
 	margin: 0 auto;
 }
-.loglist {
+.loglist , .show-guanlian {
     margin: 30px auto;
     padding: 30px 0;
 }
@@ -69,10 +69,19 @@
 
 .guanlian-btn {
     cursor: pointer;
+    background: #ccc;
     text-align: center;
     width: 100px;
     height: 30px;
     line-height: 30px;
     color:green;
     margin: auto;
+}
+.show-guanlian {
+    display: none;
+      width: 1088px;
+}
+.show-guanlian td{
+    border-right: 1px solid green;  
+    border-bottom: 1px solid green
 }
