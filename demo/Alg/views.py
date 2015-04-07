@@ -10,7 +10,7 @@ from django.utils import simplejson
 from Alg.models import *
 import xlrd
 import os
-from trans import manageData
+from trans import manageData,minSupportTest
 import json
 
 @lrender('alg/warnlog.html')
@@ -30,10 +30,8 @@ def writefile(buf,name):
 	fp = open(name,'wb')
 	fp.write(buf)
 	fp.close()
-	print 'testtesttest...'
 	cmd = 'chmod 777 ' + name
 	os.system(cmd)
-	print 'testtesttest'
 
 @login_required
 def uploadifyScript(request):
@@ -171,3 +169,21 @@ def getAttr(request):
 	result = traversal(attrs,name)
 	print result
 	return HttpResponse(simplejson.dumps({'message':result}))
+
+@login_required
+def getTest(request):
+	choice = {
+	'0.3':'0.1-0.4',
+	'0.5':'0.4-0.7',
+	'0.8':'0.7-1.0'
+	}
+	if not request.is_ajax() or request.method != 'POST':
+		raise Http404
+	name = request.POST.get("name")
+	try:
+		result = minSupportTest(name)
+		return HttpResponse(simplejson.dumps({'message':choice[result]}))
+	except:
+		return HttpResponse(simplejson.dumps({'message':'error'}))
+
+

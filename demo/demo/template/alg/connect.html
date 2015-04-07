@@ -88,7 +88,26 @@
 			'onUploadSuccess':function(file,data,response){
 				if(response == true){
 					$('#file_upload').uploadify('settings','removeCompleted','true');
+					$.ajax({
+						type:"post",
+						dataType:"json",
+						contentType:"application/x-www-form-urlencoded;charset=UTF-8",
+						url:"{%url 'Alg.views.getTest'%}",
+						data:{
+							name:file.name
+						},
+						success:function(data){
+							var  message = data.message;
+							if(message == "error"){
+								alert("计算推荐支持度失败");
+							}else{
+								alert("推荐支持度范围:"+message);
+							}
+						}
+
+					});
 				}
+
 			},
 			'onUploadError':function(file,errorCode,errorMsg,errorString){
 				alert('文件 ' + file.name + '上传失败.' + ' 详细信息: ' + errorString);
