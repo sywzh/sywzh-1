@@ -167,27 +167,41 @@ print 'rules:',rules
 #print '0.5 rules:',rules
 '''
 def manageData(name,minSupport = 0.3,minConf = 0.1):
-	eventMsg = getExcel('event1.xls')
+	eventMsg = getExcel(name)
 	SetData = setData(eventMsg)
 	key = []
 	value = []
 	results = []
-	L,suppData = apriori.apriori(SetData,minSupport=0.3)
-	print 'kjhkhh:',suppData
+	L,suppData = apriori.apriori(SetData,minSupport)
 	for (k,v) in suppData.items():
 		try:
 			key.append(events_id[str(k)])
 			value.append(v)
 		except:
 			pass
-	print key,value
-	rules = apriori.generateRules(L,suppData,minConf=0.1)
-	print 'rules:',rules
+	rules = apriori.generateRules(L,suppData,minConf)
 	for rule in rules:
 		events = []
 		for event in rule[0:-1]:
 			events.append(events_id[str(event)])
 		events.append(rule[-1])
 		results.append(events)
-	print 'results:',results
 	return key,value,results
+
+def getMinSupport(name,minSupport,minConf):
+	eventMsg = getExcel(name)
+	SetData = setData(eventMsg)
+	L,suppData = apriori.apriori(SetData,minSupport)
+	rules = apriori.generateRules(L,suppData,minConf)
+	return len(rules)
+
+def minSupportTest(name):
+	minsupport = {}
+	minsupport['0.3'] = getMinSupport(name,0.3,0.1)
+	minsupport['0.5'] = getMinSupport(name,0.5,0.1)
+	minsupport['0,8'] = getMinSupport(name,0.8,0.1)
+	result = sorted(minsupport.iteritems(),key = lambda asd:asd[1],reverse = True)
+	return result[0][0]
+	
+
+
