@@ -24,6 +24,7 @@ urlpatterns = patterns('',
     url(r'^analysis/$','Alg.views.dataAnalysis'),
     url(r'^getattr/$','Alg.views.getAttr'),
     url(r'^gettest/$','Alg.views.getTest'),
+    url(r'^safemanage/$','Alg.views.safeManager'),
     # url(r'^demo/', include('demo.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

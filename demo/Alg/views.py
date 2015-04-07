@@ -119,19 +119,14 @@ def connectHd(request):
 	return {}
 
 @login_required
-@lrender('alg/connect.html')
-def connectHd(request):
-	return {}
-
-@login_required
 def dataAnalysis(request):
 	if not request.is_ajax() or request.method != 'POST':
 		raise Http404
 	name = request.POST.get("name")
 	minSupport = request.POST.get("minSupport")
-	minConf = request.POST.get("minConf")
+	#minConf = request.POST.get("minConf")
 	try:
-		key,value,results = manageData(name,minSupport,minConf)
+		key,value,results = manageData(name,minSupport)
 		key = json.dumps(key)
 		value = json.dumps(value)
 		results = json.dumps(results)
@@ -186,4 +181,7 @@ def getTest(request):
 	except:
 		return HttpResponse(simplejson.dumps({'message':'error'}))
 
-
+@login_required
+@lrender('alg/safemanage.html')
+def safeManager(request):
+	return {}
