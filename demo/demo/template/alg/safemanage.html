@@ -1,0 +1,298 @@
+{%extends 'base.html'%}
+
+{%block t_body%}
+{% load static %}{% get_static_prefix as STATIC_URL %}
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/home.css"/>
+<link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/uploadify.css">
+
+<div class='bg-set1'>
+	<div class="demo-box">
+		<input id="file_upload" type="file" name="Filedata">
+		<!--div class="in-jiuyuan">
+			<input id="jiuyuan" type="checkbox" name="check" value="1">九院</input>
+		</div-->
+		<a class="upload-now" href="javascript:$('#file_upload').uploadify('upload','*')">上传文件</a>
+		<div id="file_uploadQueue" class="uploadifyQueue"></div>
+		<p><span id="id_span_msg"></span></p>
+		<div id="progress"></div>
+	</div>
+</div>
+<div class="tip">
+	<p>正在处理ing!!!</p>
+</div>
+<div class="handle">
+	<select class="choose-suanfa">
+		<option value="1">AprioriTime</option>
+		<option value="2">算法2</option>
+		<option value="3">算法3</option>
+		<option value="4">算法4</option>
+	</select>
+	<p>设定支持度:<input type="text" class="minSupport"></p>
+	<!--p>设定可信度:<input type="text" class="minConf"></p-->
+	<div class="handle-now">关联分析</div>
+</div>
+<div class="chart">
+	<select class="choose-chart">
+		<option value="line">折线图</option>
+		<option value="column">柱状图</option>
+	</select>
+	<div id="chart-main">	</div>
+	<div class="chart-tip"></div>
+
+	<div class="guanlian">
+		<p class="guanlian-btn">显示关联属性</p>
+	</div>
+</div>
+
+<div class="show-guanlian">
+	<table class="table">	</table>	
+	<a href="javascript:void(0);" id="prev">上一页</a>	
+	<a href="javascript:void(0);" id="next">下一页</a>
+</div>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/swfobject.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery.uploadify.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery.uploadify.min.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/chart/highcharts.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/chart/modules/exporting.js"></script>
+<script type="text/javascript">
+	var getValue = 0,
+	jiuyuan = $("#jiuyuan");
+	jiuyuan.change(function() {
+		if(jiuyuan.attr("checked")){
+			getValue = 1;
+		}else {
+			getValue = 0;
+		}
+	})
+
+
+	$(document).ready(function(){
+		$('#file_upload').uploadify({
+			'swf':'{{STATIC_URL}}/uploadify/uploadify.swf?var='+(new Date()).getTime(),
+			'uploader':'{%url "Alg.views.uploadifyScript"%}',
+			'formData':{'someKey':getValue,'someOtherKey':1},
+			'auto':false,
+			'multi':false,
+			'buttonText':'请选择文件',
+			'fileTypeExts':'*.xml;*.xls;*.xlsx',
+			'removeCompleted':false,
+			'fileSizeLimit':10240000,
+			'fileTypeDesc':'支持文档格式',
+			'onInit':function(){},
+			'onUploadStart':function(file){
+				window.fileName = file.name;
+
+				$("#file_upload").uploadify("settings","someOtherKey",2);
+			},
+			'onError':function(event,ID,fileObj,errorObj){
+				$('#id_span_msg').html("上传失败，错误码:"+errorObj.type+" "+errorObj.info);
+			},
+			'onUploadProgress':function(file,bytesUploaded,bytesTotal,totalBytesUploaded,totalBytesTotal){
+				$('#progress').html('已上传 ' +totalBytesUploaded + ' 字节. ' + '共 ' +totalBytesTotal + ' 字节.');
+			},
+			'onUploadSuccess':function(file,data,response){
+				if(response == true){
+					$('#file_upload').uploadify('settings','removeCompleted','true');
+					$.ajax({
+						type:"post",
+						dataType:"json",
+						contentType:"application/x-www-form-urlencoded;charset=UTF-8",
+						url:"{%url 'Alg.views.getTest'%}",
+						data:{
+							name:file.name
+						},
+						success:function(data){
+							var  message = data.message;
+							if(message == "error"){
+								alert("计算推荐支持度失败");
+							}else{
+								alert("推荐支持度范围:"+message);
+							}
+						}
+
+					});
+				}
+
+			},
+			'onUploadError':function(file,errorCode,errorMsg,errorString){
+				alert('文件 ' + file.name + '上传失败.' + ' 详细信息: ' + errorString);
+				
+			}
+
+			
+		});
+
+$(".handle-now").click(function(){
+	var name =  fileName;
+	var minSupport =  $(".minSupport").val();
+	var minConf = $(".minConf").val();
+
+	$.ajax({
+		type:"post",
+		dataType:"json",
+		contentType:"application/x-www-form-urlencoded;charset=UTF-8",
+		url:"{%url 'Alg.views.dataAnalysis'%}",
+		data:{
+			name:name,
+			minSupport:minSupport,
+		},
+		success:function(data){
+			window.chartresults = data.results;
+			var chartresult = JSON.parse(data.results);
+			var arr = "",rr = "",str = "",trr = "";
+			for (var i = 0; i < chartresult.length; i++) {
+				s= chartresult[i];
+				for(var j = 0; j < s.length; j++){
+					if(j < s.length-1){
+						arr += s[j]+"=>";
+					}
+					else if(j = s.length-1){
+						trr = " : "+s[j] +"<br>";
+					}
+					rr = arr + trr;
+				}
+				arr = "";
+				str +=rr;
+			}
+			$(".chart-tip").html(str);
+			var message = data.message;
+			if (message == "ok"){
+                    //alert("成功");
+                    $(".chart").fadeIn(300);
+                    var type = "line";
+                    
+                    function chart(){
+                    	var chartdata = JSON.parse(data.value);
+                    	var categorie = JSON.parse(data.key);
+                    	new Highcharts.Chart({
+                    		chart : {
+                    			type : type,
+                    			renderTo : "chart-main"
+                    		},
+                    		title : {
+                    			text : "数据分析图"
+                    		},
+                    		xAxis : {
+                    			categories : categorie
+                    		},
+                    		yAxis : {
+                    			title : {
+                    				text : "数据比例"
+                    			}
+                    		},
+                    		series : [{
+                    			allowPointSelect: true,
+                    			name : "多源告警信息关联分析系统",
+                    			data :  chartdata
+                    		}]
+                    	})
+                    }
+                    chart();
+                    $(".choose-chart").change(function(){
+                    	type = $(this).find("option:selected").val();
+                    	chart();
+                    })
+                }else if(message == "error"){
+                	alert("失败");
+                }
+
+                //显示关联属性
+                $(".guanlian-btn").click(function(){
+                	$.ajax({
+                		type:"post",
+                		dataType:"json",
+                		contentType:"application/x-www-form-urlencoded;charset=UTF-8",
+                		url:"{%url 'Alg.views.getAttr'%}",
+                		data: {
+                			fileName : fileName,
+                			results : chartresults
+                		},
+                		success : function(data){
+                			$(".show-guanlian").show();
+                			var data = data.message;
+                			var  d = [];
+
+                			for(var i = 0; i < data.length; i++){
+                				for(var j = 0; j < data[i].length; j++){
+                					d.push(data[i][j]);
+                				}
+                			}
+
+                			var page = Math.ceil((d.length/99));
+                			var countPage = 1;
+                			var l = d.length;
+                			var m = d[0].length
+                			$("#prev").hide();
+                			function show(){
+                				$(".table").empty();
+                				var th = $("<th><td>系统类型</td><td>接收时间</td><td>等级</td><td>源地址</td><td>源端口</td><td>源用户名称</td><td>目的地址</td><td>目的端口</td><td>设备地址</td><td>设备类型</td><td>事件名称</td></th>");
+                				$(".table").append(th);
+                				if(countPage < page){
+                					for(var i=0;i<99;i++){
+
+                						$(".table").append("<tr></tr>");
+                						var b = document.createElement("td");
+                						b.innerHTML = (countPage-1)*99+i+1;
+                						$(".table tr")[i].appendChild(b);
+
+                						for(var j = 0;j<m;j++){
+                							var a = document.createElement("td");
+                							a.innerHTML = d[(countPage-1)*99+i][j];
+                							$(".table tr")[i].appendChild(a);
+                						}
+                					}
+                				}else{
+                					for(var i=0;i<d.length-(page-1)*99;i++){
+                						$("#prev").show();
+                						$(".table").append("<tr></tr>");
+                						var b = document.createElement("td");
+                						b.innerHTML = (countPage-1)*99+i+1;
+                						$(".table tr")[i].appendChild(b);
+
+                						for(var j = 0;j<m;j++){
+                							var a = document.createElement("td");
+                							a.innerHTML = d[(countPage-1)*99+i][j];
+                							$(".table tr")[i].appendChild(a);
+                						}
+                					}
+                				}
+                			}
+
+                			console.log(page);
+                			$("#prev").click(function(){
+                				if(countPage != 1){
+                					countPage--;
+                					show();
+                				}else {
+                					$("#prev").hide();
+                				} if(countPage !== page){
+                					$("#next").show();
+                				}
+                			})
+
+                			$("#next").click(function(){
+
+                				if(countPage == page){
+                					$("#next").hide();
+                				}else{
+                					countPage++;
+                					$("#prev").show();
+                					show();
+                					console.log(countPage);
+                				}
+                			})
+                			show(); 
+                		},
+                		error : function(){
+
+                		}
+                	})
+                })
+            }
+        }) 
+	})
+});
+</script>
+{%endblock%}
+
