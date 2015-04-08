@@ -8,9 +8,9 @@
 <div class='bg-set1'>
 	<div class="demo-box">
 		<input id="file_upload" type="file" name="Filedata">
-		<div class="in-jiuyuan">
+		<!--div class="in-jiuyuan">
 			<input id="jiuyuan" type="checkbox" name="check" value="1">九院</input>
-		</div>
+		</div-->
 		<a class="upload-now" href="javascript:$('#file_upload').uploadify('upload','*')">上传文件</a>
 		<div id="file_uploadQueue" class="uploadifyQueue"></div>
 		<p><span id="id_span_msg"></span></p>
@@ -22,13 +22,13 @@
 </div>
 <div class="handle">
 	<select class="choose-suanfa">
-		<option value="1">算法1</option>
+		<option value="1">AprioriTime</option>
 		<option value="2">算法2</option>
 		<option value="3">算法3</option>
 		<option value="4">算法4</option>
 	</select>
 	<p>设定支持度:<input type="text" class="minSupport"></p>
-	<p>设定可信度:<input type="text" class="minConf"></p>
+	<!--p>设定可信度:<input type="text" class="minConf"></p-->
 	<div class="handle-now">关联分析</div>
 </div>
 <div class="chart">
@@ -70,7 +70,7 @@
 	$(document).ready(function(){
 		$('#file_upload').uploadify({
 			'swf':'{{STATIC_URL}}/uploadify/uploadify.swf?var='+(new Date()).getTime(),
-			'uploader':'{%url "Alg.views.uploadifyScript"%}',
+			'uploader':'{%url "Alg.views.uploadScript"%}',
 			'formData':{'someKey':getValue,'someOtherKey':1},
 			'auto':false,
 			'multi':false,
@@ -136,7 +136,6 @@ $(".handle-now").click(function(){
 		data:{
 			name:name,
 			minSupport:minSupport,
-			minConf:minConf
 		},
 		success:function(data){
 			window.chartresults = data.results;

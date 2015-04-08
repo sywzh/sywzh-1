@@ -12,11 +12,13 @@ import xlrd
 import os
 from trans import manageData,minSupportTest
 import json
+from django.core import serializers
 
 @lrender('alg/warnlog.html')
 @login_required
 def warnLog(request):
-	return {}
+	logs = WarnLog.objects.all()
+	return {'logs':logs}
 
 def profileUpload(file):
 	if file:
@@ -27,6 +29,7 @@ def profileUpload(file):
 	return False,buf
 
 def writefile(buf,name):
+	name = 'demo/media/upload/' + name
 	fp = open(name,'wb')
 	fp.write(buf)
 	fp.close()
@@ -40,14 +43,28 @@ def uploadifyScript(request):
 		pass
 	else:
 		result,buf = profileUpload(file)
-		print 'result:',result
 		writefile(buf,file.name)
 	return HttpResponse(simplejson.dumps({'message':'ok'}))
 
-def dropFile(name):
-	cmd = 'rm -rf '+name
+def wtFile(buf,name):
+	fp = open(name,'wb')
+	fp.write(buf)
+	fp.close()
+	cmd = 'chmod 777 ' + name
 	os.system(cmd)
 
+@login_required
+def uploadScript(request):
+	file = request.FILES.get("Filedata",None)
+	result,buf = profileUpload(file)
+	wtFile(buf,file.name)
+	return HttpResponse(simplejson.dumps({'message':'ok'}))
+
+def dropFile(name):
+	name = 'demo/media/upload/' + name
+	cmd = 'rm -rf '+name
+	os.system(cmd)
+'''
 def storageFile(name,user):
 	data = xlrd.open_workbook(name)
 	table = data.sheets()[0]
@@ -111,7 +128,29 @@ def handleData(request):
 	elif flag == "2":
 		return HttpResponse(simplejson.dumps({'message':'formerror'}))		
 	return HttpResponse(simplejson.dumps({'message':'ok'}))
+'''
 
+def handleFile(name,user):
+	try:
+		obj = WarnLog(user_id = user.id,name = name)
+		obj.save()
+		return True
+	except:
+		return False
+
+def handleData(request):
+	if not request.is_ajax() or request.method != 'POST':
+		raise Http404
+	filename = request.POST.get("filename")
+	if WarnLog.objects.filter(name = filename).count()>0:
+		return HttpResponse(simplejson.dumps({'message':'uploaded'}))
+	flag = handleFile(filename,request.user)
+	if flag:
+		logs = WarnLog.objects.all()
+		serializer_log = serializers.serialize("json",logs)
+		return HttpResponse(simplejson.dumps({'message':'ok','data':serializer_log}))
+	else:
+		return HttpResponse(simplejson.dumps({'message':'error'}))
 
 @login_required
 @lrender('alg/connect.html')

@@ -4,8 +4,10 @@ from datetime import datetime
 
 class WarnLog(models.Model):
 	user = models.ForeignKey(User)
-	name = models.CharField(max_length = 60)
+	name = models.CharField(max_length = 20)
+	time = models.DateTimeField(default = datetime.now)
 
+'''
 class Warn(models.Model):
 	user = models.ForeignKey(User)
 	name = models.ForeignKey(WarnLog)
@@ -32,6 +34,7 @@ class WarnNine(models.Model):
 	deviceads = models.CharField(max_length = 16)
 	devicetype = models.CharField(max_length = 20)
 	event = models.CharField(max_length = 300)
+'''
 
 class Correlation(models.Model):
 	name = models.ForeignKey(WarnLog)

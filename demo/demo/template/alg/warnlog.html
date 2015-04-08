@@ -8,7 +8,7 @@
 <div class='bg-set1'>
 	<div class="demo-box">
 		<input id="file_upload" type="file" name="Filedata">
-        <div class="in-jiuyuan"><input id="jiuyuan" type="checkbox" name="check" value="1">九院</input></div>
+        <!--div class="in-jiuyuan"><input id="jiuyuan" type="checkbox" name="check" value="1">九院</input></div-->
 
         <a class="upload-now" href="javascript:$('#file_upload').uploadify('upload','*')">上传文件</a>
 		<div id="file_uploadQueue" class="uploadifyQueue"></div>
@@ -27,18 +27,18 @@
     <div class="log-table">
         <table>
             <tr>
-                <th>日志名</th>
-                <th>查看</th>
-                <th>下载</th>
-                <th>分享</th>
-                <th>删除</th>
+               <th>日志名</th>
+               <th>上传时间</th>
+               <th>操作</th>
+               
             </tr>
             <tr>
-                <td>111</td>
-                <td>222</td>
-                <td>333</td>
-                <td>444</td>
-                <td>555</td>
+               {%for log in logs%}
+               <td>{{log.name}}</td>
+               <td>{{log.time}}</td>
+               <td>下载   删除</td>
+                
+               {%endfor%}
             </tr>
         </table>
     </div>

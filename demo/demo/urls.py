@@ -4,6 +4,7 @@ __author__='wzh'
 
 from django.conf.urls import patterns, include, url
 import User
+import settings
 # Uncomment the next two lines to enable the admin:
 #from django.contrib import admin
 #admin.autodiscover()
@@ -25,6 +26,8 @@ urlpatterns = patterns('',
     url(r'^getattr/$','Alg.views.getAttr'),
     url(r'^gettest/$','Alg.views.getTest'),
     url(r'^safemanage/$','Alg.views.safeManager'),
+    url(r'^media/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.MEDIA_ROOT}),
+    url(r'^uploadscript/$','Alg.views.uploadScript'),
     # url(r'^demo/', include('demo.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
