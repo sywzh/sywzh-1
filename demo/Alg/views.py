@@ -36,6 +36,13 @@ def writefile(buf,name):
 	cmd = 'chmod 777 ' + name
 	os.system(cmd)
 
+def readfile(name):
+	name = 'demo/media/upload/' + name
+	fp = open(name,'rb')
+	buf = fp.read()
+	fp.close()
+	return buf
+
 @login_required
 def uploadifyScript(request):
 	file = request.FILES.get("Filedata",None)
@@ -177,7 +184,7 @@ def traversal(attrs,name):
 	attrs = [[u"FW-NAT",u"dos攻击"],[u"dos攻击",u"FW-NAT"]]
 	connect = []
 	result = []
-	data = xlrd.open_workbook('event1.xls')
+	data = xlrd.open_workbook(name)
 	table = data.sheets()[0]
 	for attr in attrs:
 		for i in range(table.nrows):
@@ -199,9 +206,7 @@ def getAttr(request):
 		raise Http404
 	attrs = [[u"FW-NAT",u"dos攻击"],[u"dos攻击",u"FW-NAT"]]
 	name = "event1.xls"
-	print 'test:',name
 	result = traversal(attrs,name)
-	print result
 	return HttpResponse(simplejson.dumps({'message':result}))
 
 @login_required
@@ -224,3 +229,26 @@ def getTest(request):
 @lrender('alg/safemanage.html')
 def safeManager(request):
 	return {}
+
+def downLoad(request,sid):
+	try:
+		obj = WarnLog.objects.get(id = sid)
+		name = obj.name
+		buf = readfile(name)
+		name = name.encode('utf8')
+		response = HttpResponse(buf,mimetype = 'application/octet-stream')
+		response['Content-Disposition'] = 'attachment;filename=%s' % name
+		return response
+	except:
+		raise Http404
+
+def deleteLog(request):
+	if request.method != 'POST' or not request.is_ajax():
+		raise Http404
+	id = request.POST.get("id")
+	try:
+		obj = WarnLog.objects.get(id = id)
+		obj.delete()
+		return HttpResponse(simplejson.dumps({'message':'ok'}))
+	except:
+		return HttpResponse(simplejson.dumps({'message':'error'}))

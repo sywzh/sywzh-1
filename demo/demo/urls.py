@@ -28,6 +28,8 @@ urlpatterns = patterns('',
     url(r'^safemanage/$','Alg.views.safeManager'),
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.MEDIA_ROOT}),
     url(r'^uploadscript/$','Alg.views.uploadScript'),
+    url(r'^download/(\w+)/$','Alg.views.downLoad'),
+    url(r'^deletelog/$','Alg.views.deleteLog'),
     # url(r'^demo/', include('demo.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
