@@ -13,6 +13,7 @@ import os
 from trans import manageData,minSupportTest
 import json
 from django.core import serializers
+from similiarAttr import analysisData
 
 @lrender('alg/warnlog.html')
 @login_required
@@ -180,25 +181,53 @@ def dataAnalysis(request):
 	except:
 		return HttpResponse(simplejson.dumps({'message':'error'}))
 
-def traversal(attrs,name):
-	attrs = [[u"FW-NAT",u"dos攻击"],[u"dos攻击",u"FW-NAT"]]
-	connect = []
+def similiarData(data):
 	result = []
+	for i in range(len(data)):
+		attrs = []
+		attrs.append(data[i][1])
+		attrs.append(data[i][3])
+		attrs.append(data[i][6])
+		attrs.append(data[i][4])
+		attrs.append(data[i][7])
+		result.append(attrs)
+	return result
+
+def traversal(attrs,name,value = 0.9):
+	attrs = [[u"FW-NAT",u"dos攻击"],[u"dos攻击",u"FW-NAT"]]
+	result = []
+	result_attrs = []
 	data = xlrd.open_workbook(name)
 	table = data.sheets()[0]
 	for attr in attrs:
+		connect = []
+		attr_result = []
+		count = 0
+		cont = 0
 		for i in range(table.nrows):
 			flag = 0
 			for j in range(len(attr)):
+				similiar = []
 				if(attr[j] in table.row_values(i+flag)):
 					flag = flag + 1
 				if (flag == len(attr)):
+					cont = cont + 1
 					for k in range(i,i+flag):
+						similiar.append(table.row_values(k))
 						connect.append(table.row_values(k))
+					if analysisData(similiarData(similiar)) > value:
+						count = count + 1
+						for k in range(i,i+flag):
+							attr_result.append(table.row_values(k))
+
 				else:
 					continue
+		print len(connect),len(attr_result),count,cont
 		result.append(connect)
-	return result
+		result_attrs.append(attr_result)
+	return result,result_attrs
+
+
 
 @login_required
 def getAttr(request):
@@ -206,7 +235,9 @@ def getAttr(request):
 		raise Http404
 	attrs = [[u"FW-NAT",u"dos攻击"],[u"dos攻击",u"FW-NAT"]]
 	name = "event1.xls"
-	result = traversal(attrs,name)
+	print name
+	result,attr_result = traversal(attrs,name)
+	print len(result[0]),len(result[1]),len(attr_result[0]),len(attr_result[1])
 	return HttpResponse(simplejson.dumps({'message':result}))
 
 @login_required
