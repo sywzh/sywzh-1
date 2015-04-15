@@ -1,0 +1,13 @@
+{%extends 'base.html'%}
+
+{%block t_body%}
+<link rel="stylesheet" type="text/css" href="../static/css/home.css"/>
+<div class='bg-set1'>
+{%for log in logs%}
+{{log.Status}}
+{{log.name}}
+{{log.time}}
+{%endfor%}
+</div>
+
+{%endblock%}

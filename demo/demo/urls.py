@@ -30,6 +30,7 @@ urlpatterns = patterns('',
     url(r'^uploadscript/$','Alg.views.uploadScript'),
     url(r'^download/(\w+)/$','Alg.views.downLoad'),
     url(r'^deletelog/$','Alg.views.deleteLog'),
+    url(r'^historylog/$','Log.views.historyLog'),
     # url(r'^demo/', include('demo.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

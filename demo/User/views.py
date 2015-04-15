@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from demo.decorators import lrender
 from django.contrib.auth import authenticate,login,logout
 from django.utils import simplejson
+from Log import log
 
 @lrender('login.html')
 def logoHd(request):
@@ -22,6 +23,7 @@ def LoginHd(request):
 	user = authenticate(username = username,password = password)
 	if user:
 		login(request,user)
+		log(request.user.id,'1')
 		return HttpResponse(simplejson.dumps({'message':'ok'}))
 	return HttpResponse(simplejson.dumps({'message':'error'}))
 
