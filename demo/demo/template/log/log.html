@@ -2,12 +2,24 @@
 
 {%block t_body%}
 <link rel="stylesheet" type="text/css" href="../static/css/home.css"/>
-<div class='bg-set1'>
-{%for log in logs%}
-{{log.Status}}
-{{log.name}}
-{{log.time}}
-{%endfor%}
+<div class='loglist'>
+<div class="log-table">
+    <table>
+    <tr>
+    	<th>操作</th>
+    	<th>操作对象</th>
+    	<th>操作时间</th>
+    </tr>
+        {%for log in logs%}
+        <tr>
+           <td>{{log.Status}}</td>
+           <td>{{log.name}}</td>
+           <td>{{log.time}}</td>
+                   
+        </tr>
+        {%endfor%}
+    </table>
+</div>
 </div>
 
 {%endblock%}

@@ -32,14 +32,19 @@
                <th>操作</th>
                
             </tr>
+            {%for log in logs%}
             <tr>
-               {%for log in logs%}
+               
                <td>{{log.name}}</td>
                <td>{{log.time}}</td>
-               <td>下载   删除</td>
+               <td>
+				<a class="logList-down" href="">下载</a>
+				<a class="logList-del" href="">删除</a>
+               </td>
                 
-               {%endfor%}
+               
             </tr>
+            {%endfor%}
         </table>
     </div>
 </div>

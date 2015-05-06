@@ -18,16 +18,38 @@
     margin-left: 30px;
 }
 .loglist table {
-    width: 500px;
+    width: 800px;
     margin: auto;
     border-collapse: collapse;
     border: none;
 }
 
 .loglist td, .loglist th {
-    border: 1px solid #000;
     text-align: center;
 }
+.loglist td {
+    padding: 10px 50px;
+}
+.loglist a {
+      text-decoration: none;
+      display: inline-block;
+      background: #0080FF;
+      width: 60px;
+      height: 30px;
+      line-height: 30px;
+      border-radius: 10px;
+      margin-right: 7px;
+      color: white;
+      cursor: pointer;
+}
+.loglist a:hover {
+    background: #468ED5;
+}
+
+.loglist tr:nth-child(even) {
+    background: #eef1f8;
+}
+
 .tip {
     display: none;
 }
