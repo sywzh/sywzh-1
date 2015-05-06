@@ -23,7 +23,7 @@ def LoginHd(request):
 	user = authenticate(username = username,password = password)
 	if user:
 		login(request,user)
-		log(request.user.id,'1')
+		log(request.user.id,'1','')
 		return HttpResponse(simplejson.dumps({'message':'ok'}))
 	return HttpResponse(simplejson.dumps({'message':'error'}))
 
