@@ -38,8 +38,8 @@
                <td>{{log.name}}</td>
                <td>{{log.time}}</td>
                <td>
-				<a class="logList-down" href="">下载</a>
-				<a class="logList-del" href="">删除</a>
+				<a class="logList-down" href="{%url 'Alg.views.downLoad' log.id%}">下载</a>
+				<a class="logList-del" href="{%url 'Alg.views.deleteLog' log.id%}">删除</a>
                </td>
                 
                
@@ -107,6 +107,7 @@
 						var message = data.message;
 						if (message == "ok"){
 							alert("上传成功");
+							window.location.reload();
 						}else if(message == "error"){
 							alert("上传失败");
 						}else if(message == "formerror"){

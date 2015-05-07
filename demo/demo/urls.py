@@ -29,7 +29,7 @@ urlpatterns = patterns('',
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.MEDIA_ROOT}),
     url(r'^uploadscript/$','Alg.views.uploadScript'),
     url(r'^download/(\w+)/$','Alg.views.downLoad'),
-    url(r'^deletelog/$','Alg.views.deleteLog'),
+    url(r'^deletelog/(\w+)$','Alg.views.deleteLog'),
     url(r'^historylog/$','Log.views.historyLog'),
     # url(r'^demo/', include('demo.foo.urls')),
 

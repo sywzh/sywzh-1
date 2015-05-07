@@ -146,24 +146,44 @@ def handleFile(name,user):
 	except:
 		return False
 
+def formData(name):
+	name = 'demo/media/upload/' + name
+	data = xlrd.open_workbook(name)
+	table = data.sheets()[0]
+	nrows = table.ncols
+	if nrows != 11:
+		return False
+	if table.row_values(0)[0] != u'系统类型':
+		return False
+	return True
+
 def handleData(request):
 	if not request.is_ajax() or request.method != 'POST':
 		raise Http404
 	filename = request.POST.get("filename")
 	if WarnLog.objects.filter(name = filename).count()>0:
 		return HttpResponse(simplejson.dumps({'message':'uploaded'}))
-	flag = handleFile(filename,request.user)
-	if flag:
-		logs = WarnLog.objects.all()
-		serializer_log = serializers.serialize("json",logs)
-		return HttpResponse(simplejson.dumps({'message':'ok','data':serializer_log}))
+	if filename[-3:] == 'xls' or filename[-4:] == 'xlsx':
+		pass
 	else:
+		cmd = 'rm -rf demo/media/upload/' + filename
+		os.system(cmd)
+		return HttpResponse(simplejson.dumps({'message':'formerror'}))
+	if formData(filename) == False:
+		cmd = 'rm -rf demo/media/upload/' + filename
+		os.system(cmd)
+		return HttpResponse(simplejson.dumps({'message':'attrerror'}))
+
+	flag = handleFile(filename,request.user)
+	if flag == False:
 		return HttpResponse(simplejson.dumps({'message':'error'}))
+	return HttpResponse(simplejson.dumps({'message':'ok'}))
 
 @login_required
 @lrender('alg/connect.html')
 def connectHd(request):
-	return {}
+	logs = WarnLog.objects.all()
+	return {'logs':logs}
 
 @login_required
 def dataAnalysis(request):
@@ -193,7 +213,7 @@ def similiarData(data):
 		result.append(attrs)
 	return result
 
-def traversal(attrs,name,value = 0.9):
+def traversal(attrs,name,value = 0.94):
 	attrs = [[u"FW-NAT",u"dos攻击"],[u"dos攻击",u"FW-NAT"]]
 	result = []
 	result_attrs = []
@@ -208,6 +228,10 @@ def traversal(attrs,name,value = 0.9):
 			flag = 0
 			for j in range(len(attr)):
 				similiar = []
+				try:
+					table.row_values(i+flag)
+				except:
+					continue
 				if(attr[j] in table.row_values(i+flag)):
 					flag = flag + 1
 				if (flag == len(attr)):
@@ -219,26 +243,26 @@ def traversal(attrs,name,value = 0.9):
 						count = count + 1
 						for k in range(i,i+flag):
 							attr_result.append(table.row_values(k))
-
 				else:
 					continue
-		print len(connect),len(attr_result),count,cont
 		result.append(connect)
 		result_attrs.append(attr_result)
 	return result,result_attrs
-
-
 
 @login_required
 def getAttr(request):
 	if not request.is_ajax() or request.method != 'POST':
 		raise Http404
 	attrs = [[u"FW-NAT",u"dos攻击"],[u"dos攻击",u"FW-NAT"]]
-	name = "event1.xls"
+	filename = request.POST.get("fileName")
+	results = request.POST.get("results")
+	print filename,results
+	name = filename
 	print name
 	result,attr_result = traversal(attrs,name)
-	print len(result[0]),len(result[1]),len(attr_result[0]),len(attr_result[1])
-	return HttpResponse(simplejson.dumps({'message':result}))
+	return HttpResponse(simplejson.dumps({'message':attr_result}))
+
+
 
 @login_required
 def getTest(request):
@@ -273,13 +297,13 @@ def downLoad(request,sid):
 	except:
 		raise Http404
 
-def deleteLog(request):
-	if request.method != 'POST' or not request.is_ajax():
-		raise Http404
-	id = request.POST.get("id")
+def deleteLog(request,sid):
 	try:
-		obj = WarnLog.objects.get(id = id)
+		obj = WarnLog.objects.get(id = sid)
+		name = obj.name
+		cmd = 'rm -rf demo/media/upload/' + name
+		os.system(cmd)
 		obj.delete()
-		return HttpResponse(simplejson.dumps({'message':'ok'}))
+		return HttpResponseRedirect('/alg')
 	except:
-		return HttpResponse(simplejson.dumps({'message':'error'}))
+		raise Http404
