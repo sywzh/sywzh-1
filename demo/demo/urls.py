@@ -31,6 +31,7 @@ urlpatterns = patterns('',
     url(r'^download/(\w+)/$','Alg.views.downLoad'),
     url(r'^deletelog/(\w+)$','Alg.views.deleteLog'),
     url(r'^historylog/$','Log.views.historyLog'),
+    url(r'^importdata/$','Alg.views.importData'),
     # url(r'^demo/', include('demo.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

@@ -146,8 +146,8 @@ def handleFile(name,user):
 	except:
 		return False
 
-def formData(name):
-	name = 'demo/media/upload/' + name
+def formData(name,fileUrl = 'demo/media/upload/'):
+	name = fileUrl + name
 	data = xlrd.open_workbook(name)
 	table = data.sheets()[0]
 	nrows = table.ncols
@@ -166,14 +166,11 @@ def handleData(request):
 	if filename[-3:] == 'xls' or filename[-4:] == 'xlsx':
 		pass
 	else:
-		cmd = 'rm -rf demo/media/upload/' + filename
-		os.system(cmd)
+		dropFile(filename)
 		return HttpResponse(simplejson.dumps({'message':'formerror'}))
 	if formData(filename) == False:
-		cmd = 'rm -rf demo/media/upload/' + filename
-		os.system(cmd)
+		dropFile(filename)
 		return HttpResponse(simplejson.dumps({'message':'attrerror'}))
-
 	flag = handleFile(filename,request.user)
 	if flag == False:
 		return HttpResponse(simplejson.dumps({'message':'error'}))
@@ -197,6 +194,7 @@ def dataAnalysis(request):
 		key = json.dumps(key)
 		value = json.dumps(value)
 		results = json.dumps(results)
+		print 'key:',key,'value:',value,'results:',results
 		return HttpResponse(simplejson.dumps({'message':'ok','key':key,'value':value,"results":results}))
 	except:
 		return HttpResponse(simplejson.dumps({'message':'error'}))
@@ -256,13 +254,8 @@ def getAttr(request):
 	attrs = [[u"FW-NAT",u"dos攻击"],[u"dos攻击",u"FW-NAT"]]
 	filename = request.POST.get("fileName")
 	results = request.POST.get("results")
-	print filename,results
-	name = filename
-	print name
-	result,attr_result = traversal(attrs,name)
+	result,attr_result = traversal(attrs,filename)
 	return HttpResponse(simplejson.dumps({'message':attr_result}))
-
-
 
 @login_required
 def getTest(request):
@@ -273,9 +266,19 @@ def getTest(request):
 	}
 	if not request.is_ajax() or request.method != 'POST':
 		raise Http404
-	name = request.POST.get("name")
+	filename = request.POST.get("name")
+	if filename[-3:] == 'xls' or filename[-4:] == 'xlsx':
+		pass
+	else:
+		cmd = 'rm -rf ' + filename
+		os.system(cmd)
+		return HttpResponse(simplejson.dumps({'message':'formerror'}))
+	if formData(filename,'') == False:
+		cmd = 'rm -rf ' + filename
+		os.system(cmd)
+		return HttpResponse(simplejson.dumps({'message':'attrerror'}))
 	try:
-		result = minSupportTest(name)
+		result = minSupportTest(filename)
 		return HttpResponse(simplejson.dumps({'message':choice[result]}))
 	except:
 		return HttpResponse(simplejson.dumps({'message':'error'}))
@@ -285,6 +288,7 @@ def getTest(request):
 def safeManager(request):
 	return {}
 
+@login_required
 def downLoad(request,sid):
 	try:
 		obj = WarnLog.objects.get(id = sid)
@@ -297,6 +301,7 @@ def downLoad(request,sid):
 	except:
 		raise Http404
 
+@login_required
 def deleteLog(request,sid):
 	try:
 		obj = WarnLog.objects.get(id = sid)
@@ -307,3 +312,20 @@ def deleteLog(request,sid):
 		return HttpResponseRedirect('/alg')
 	except:
 		raise Http404
+
+@login_required
+def importData(request):
+	if not request.is_ajax() or request.method != 'POST':
+		raise Http404
+	choice = {
+	'0.3':'0.1-0.4',
+	'0.5':'0.4-0.7',
+	'0.8':'0.7-1.0'
+	}
+	name = request.POST.get("name")
+	try:
+		result = minSupportTest(name)
+		return HttpResponse(simplejson.dumps({'message':choice[result]}))
+	except:
+		return HttpResponse(simplejson.dumps({'message':'error'}))
+

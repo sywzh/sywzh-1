@@ -26,14 +26,15 @@
                <th>操作</th>
                
             </tr>
+            {%for log in logs%}
             <tr>
-               {%for log in logs%}
                <td>{{log.name}}</td>
                <td>{{log.time}}</td>
-               <td>导入</td>
+               <td><a class="import" dataName = {{log.name}}>导入</a></td>
                 
-               {%endfor%}
+               
             </tr>
+            {%endfor%}
         </table>
     </div>
     </div>
@@ -127,6 +128,10 @@
 							var  message = data.message;
 							if(message == "error"){
 								alert("计算推荐支持度失败");
+                                   }else if(message == "formerror"){
+                                        alert("上传文件格式错误 仅上传xls、xlsx格式");
+                                   }else if(message == "attrerror"){
+                                        alert("约定段属性错误，上传失败");
 							}else{
 								alert("推荐支持度范围:"+message);
 							}
@@ -314,7 +319,32 @@ $(".handle-now").click(function(){
                 })
             }
         }) 
-	})
+	});
+    $(".import").click(function(){
+        name = $(this).attr("dataName");
+        fileName = "demo/media/upload/" + name
+        $.ajax({
+            type:"post",
+            dataType:"json",
+            contentType:"application/x-www-form-urlencoded;charset=UTF-8",
+            url:"{%url 'Alg.views.importData'%}",
+            data: {
+                name:fileName
+            },
+            success : function(data){
+                var  message = data.message;
+                if(message == "error"){
+                    alert("计算推荐支持度失败");
+                }else{
+                    alert("推荐支持度范围:"+message);
+                }
+
+            }
+        })    
+    })
+
+
+
 });
 </script>
 {%endblock%}
