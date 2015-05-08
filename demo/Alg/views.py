@@ -72,7 +72,7 @@ def dropFile(name):
 	name = 'demo/media/upload/' + name
 	cmd = 'rm -rf '+name
 	os.system(cmd)
-'''
+
 def storageFile(name,user):
 	data = xlrd.open_workbook(name)
 	table = data.sheets()[0]
@@ -121,7 +121,7 @@ def handleFile(filename,username,getvalue):
 	op = WarnLog(user_id = username.id,name = filename)
 	op.save()
 	return 0
-
+'''
 def handleData(request):
 	if not request.is_ajax() or request.method != 'POST':
 		raise Http404
@@ -182,19 +182,31 @@ def connectHd(request):
 	logs = WarnLog.objects.all()
 	return {'logs':logs}
 
+def storageAnalysis(user,name,results,minSupport):
+	filename = name + '/'
+	name = filename.split('/')[-2]
+	for result in results:
+		sequence = ''
+		for element in result[0:-1]:
+			if element != result[-2]:
+				sequence = sequence + element + '->'
+			else:
+				sequence = sequence + element
+		obj = SafeManager(user_id = user.id,name = name,support = minSupport,attack_sequence = sequence)
+		obj.save()
+
 @login_required
 def dataAnalysis(request):
 	if not request.is_ajax() or request.method != 'POST':
 		raise Http404
 	name = request.POST.get("name")
 	minSupport = request.POST.get("minSupport")
-	#minConf = request.POST.get("minConf")
 	try:
 		key,value,results = manageData(name,minSupport)
 		key = json.dumps(key)
 		value = json.dumps(value)
+		storageAnalysis(request.user,name,results,minSupport)
 		results = json.dumps(results)
-		print 'key:',key,'value:',value,'results:',results
 		return HttpResponse(simplejson.dumps({'message':'ok','key':key,'value':value,"results":results}))
 	except:
 		return HttpResponse(simplejson.dumps({'message':'error'}))
@@ -255,7 +267,7 @@ def getAttr(request):
 	filename = request.POST.get("fileName")
 	results = request.POST.get("results")
 	result,attr_result = traversal(attrs,filename)
-	return HttpResponse(simplejson.dumps({'message':attr_result}))
+	return HttpResponse(simplejson.dumps({'message':result}))
 
 @login_required
 def getTest(request):
@@ -267,6 +279,7 @@ def getTest(request):
 	if not request.is_ajax() or request.method != 'POST':
 		raise Http404
 	filename = request.POST.get("name")
+
 	if filename[-3:] == 'xls' or filename[-4:] == 'xlsx':
 		pass
 	else:

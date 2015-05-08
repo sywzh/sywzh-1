@@ -7,19 +7,6 @@ class WarnLog(models.Model):
 	name = models.CharField(max_length = 20)
 	time = models.DateTimeField(default = datetime.now)
 
-'''
-class Warn(models.Model):
-	user = models.ForeignKey(User)
-	name = models.ForeignKey(WarnLog)
-	attack_name = models.CharField(max_length = 60)
-	attack_type = models.CharField(max_length = 60)
-	ipsrc = models.CharField(max_length = 16)
-	ipdst = models.CharField(max_length = 16)
-	srcport = models.IntegerField()
-	dstport = models.IntegerField()
-	start_time = models.DateTimeField()
-	end_time = models.DateTimeField()
-
 class WarnNine(models.Model):
 	user = models.ForeignKey(User)
 	name = models.CharField(max_length = 60)
@@ -34,19 +21,14 @@ class WarnNine(models.Model):
 	deviceads = models.CharField(max_length = 16)
 	devicetype = models.CharField(max_length = 20)
 	event = models.CharField(max_length = 300)
-'''
-
-class Correlation(models.Model):
-	name = models.ForeignKey(WarnLog)
-	algorithm = models.CharField(max_length = 20)
-	support = models.FloatField()
-	time = models.FloatField()
 
 class SafeManager(models.Model):
 	user = models.ForeignKey(User)
-	name = models.ForeignKey(WarnLog)
+	name = models.CharField(max_length = 40)
+	support = models.FloatField()
 	attack_sequence = models.CharField(max_length = 100)
-	attack_name = models.CharField(max_length = 60)
+	attack_name = models.CharField(max_length = 60,default = '')
+	time = models.DateTimeField(default = datetime.now)
 
 	
 
