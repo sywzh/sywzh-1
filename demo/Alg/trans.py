@@ -7,6 +7,7 @@ from dateutil.parser import parse
 import datetime
 import time
 import apriori
+import aprioriall
 
 def setData(data):
 	len_data = len(data)
@@ -71,7 +72,8 @@ events_id = {
      "frozenset([7])":u"ARP_IP地址欺骗",
      "frozenset([8])":u"SMB_IPC$默认共享连接",
      "frozenset([9])":u"MSRPC_连接",
-     "frozenset([1, 2])":u"FW-NAT dos攻击"
+     "frozenset([1, 2])":u"FW-NAT dos攻击",
+     "frozenset([2, 1])":u"dos攻击 FW-NAT"
 }
 
 def getExcel(name):
@@ -105,81 +107,21 @@ def getAllExcel():
 	return Msg
 
 
-'''
-len_events = len(events)
-#print 'events:',events
-
-def timeWindow(time,step,events,len_data):
-	data = []
-	for i in range(0,len_data,step):
-		sets = []
-		numbers = time + i
-		if numbers > len_data:
-			return data
-		for j in range(i,numbers):
-			sets.append(events[j])
-		data.append(sets)
-	return data
-
-dataSet = timeWindow(5,1,events,len_events)
-#print 'data:',timeWindow(10,1,events,len_data)
-
-fp = open('test.txt','wb')
-fp.write(str(dataSet))
-fp.close()
-'''
-
-
-'''
-C1 = apriori.createC1(dataSet)
-#print 'C1:',C1
-
-D = map(set,dataSet)
-#print D
-
-L1,suppData0 = apriori.scanD(D,C1,0.001)
-#print 'L1:',L1
-
-L,suppData = apriori.apriori(dataSet)
-print 'L:',L
-#print 'L[0]:',L[0]
-#print 'L[1]:',L[1]
-#print 'L[2]:',L[2]
-print 'suppData:',suppData
-
-#answer = apriori.aprioriGen(L[0],2)
-#print answer
-
-L,suppData = apriori.apriori(dataSet,minSupport = 0.7)
-#print L
-#print suppData
-'''
-'''
-eventMsg = getAllExcel()
-SetData = setData(eventMsg)
-print SetData
-
-L,suppData = apriori.apriori(SetData,minSupport = 0.3)
-rules = apriori.generateRules(L,suppData,minConf = 0.1)
-print 'rules:',rules
-
-#rules = apriori.generateRules(L,suppData,minConf = 0.5)
-#print '0.5 rules:',rules
-'''
-def manageData(name,minSupport = 0.3,minConf = 0.1):
+def manageData(name,minSupport = 0.2,minConf = 0.1):
 	eventMsg = getExcel(name)
 	SetData = setData(eventMsg)
+	L,suppData = apriori.apriori(SetData,float(minSupport))
+	#aprioriall.aprioriall(SetData,float(minSupport))
+	rules = apriori.generateRules(L,suppData,minConf=0.1)
 	key = []
 	value = []
 	results = []
-	L,suppData = apriori.apriori(SetData,minSupport)
 	for (k,v) in suppData.items():
 		try:
 			key.append(events_id[str(k)])
 			value.append(v)
 		except:
 			pass
-	rules = apriori.generateRules(L,suppData,minConf)
 	for rule in rules:
 		events = []
 		for event in rule[0:-1]:
@@ -192,6 +134,7 @@ def getMinSupport(name,minSupport,minConf):
 	eventMsg = getExcel(name)
 	SetData = setData(eventMsg)
 	L,suppData = apriori.apriori(SetData,minSupport)
+	print L,suppData
 	rules = apriori.generateRules(L,suppData,minConf)
 	return len(rules)
 
