@@ -30,5 +30,5 @@ class SafeManager(models.Model):
 	attack_name = models.CharField(max_length = 60,default = '')
 	time = models.DateTimeField(default = datetime.now)
 
-	
-
+class Events(models.Model):
+	name = models.CharField(max_length = 100)

@@ -5,6 +5,7 @@ __author__='wzh'
 from django.conf.urls import patterns, include, url
 import User
 import settings
+from  Alg import views
 # Uncomment the next two lines to enable the admin:
 #from django.contrib import admin
 #admin.autodiscover()
@@ -32,6 +33,8 @@ urlpatterns = patterns('',
     url(r'^deletelog/(\w+)$','Alg.views.deleteLog'),
     url(r'^historylog/$','Log.views.historyLog'),
     url(r'^importdata/$','Alg.views.importData'),
+    url(r'^sequence$',views.SafeManagerDetail.as_view()),
+    url(r'^events$',views.EventsDetail.as_view()),
     # url(r'^demo/', include('demo.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

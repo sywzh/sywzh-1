@@ -8,6 +8,7 @@ import datetime
 import time
 import apriori
 import aprioriall
+from Alg.models import Events
 
 def setData(data):
 	len_data = len(data)
@@ -76,7 +77,37 @@ events_id = {
      "frozenset([2, 1])":u"dos攻击 FW-NAT"
 }
 
+def storageEvents(event):
+	events = set(event)
+	for event_type in events:
+		if Events.objects.filter(name = event_type).count()>0:
+			pass
+		else:
+			op = Events(name = event_type)
+			op.save()
+
 def getExcel(name):
+	wb = xlrd.open_workbook(name)
+	table = wb.sheets()[0]
+	col_data = table.col_values(9)
+	eventMsg = []
+	len_data = len(col_data)
+	storage = []
+	for i in range(1,len_data):
+		events = []
+		if col_data[i] != u"/服务器/Windows" and col_data[i] != u"/服务器":
+			event = table.cell_value(i,10)
+			try:
+				storage.append(event)
+				events.append(table.cell_value(i,1))
+				events.append(event_messages[event])
+				eventMsg.append(events)
+			except:
+				pass
+	storageEvents(storage)
+	return eventMsg
+
+def getExcelTest(name):
 	wb = xlrd.open_workbook(name)
 	table = wb.sheets()[0]
 	col_data = table.col_values(9)
@@ -131,7 +162,7 @@ def manageData(name,minSupport = 0.2,minConf = 0.1):
 	return key,value,results
 
 def getMinSupport(name,minSupport,minConf):
-	eventMsg = getExcel(name)
+	eventMsg = getExcelTest(name)
 	SetData = setData(eventMsg)
 	L,suppData = apriori.apriori(SetData,minSupport)
 	print L,suppData

@@ -14,6 +14,10 @@ from trans import manageData,minSupportTest
 import json
 from django.core import serializers
 from similiarAttr import analysisData
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from Alg.serializers import SafeManagerSerializer,EventsSerializer
 
 @lrender('alg/warnlog.html')
 @login_required
@@ -195,6 +199,7 @@ def storageAnalysis(user,name,results,minSupport):
 		obj = SafeManager(user_id = user.id,name = name,support = minSupport,attack_sequence = sequence)
 		obj.save()
 
+
 @login_required
 def dataAnalysis(request):
 	if not request.is_ajax() or request.method != 'POST':
@@ -202,6 +207,7 @@ def dataAnalysis(request):
 	name = request.POST.get("name")
 	minSupport = request.POST.get("minSupport")
 	try:
+
 		key,value,results = manageData(name,minSupport)
 		key = json.dumps(key)
 		value = json.dumps(value)
@@ -342,3 +348,14 @@ def importData(request):
 	except:
 		return HttpResponse(simplejson.dumps({'message':'error'}))
 
+class SafeManagerDetail(APIView):
+	def get(self,request,format=None):
+		sequence = SafeManager.objects.filter(user_id = request.user.id)
+		serializer = SafeManagerSerializer(sequence,many = True)
+		return Response({'status':200,'data':serializer.data})
+
+class EventsDetail(APIView):
+	def get(self,request,format = None):
+		events = Events.objects.all()
+		serializer = EventsSerializer(events,many = True)
+		return Response({'status':200,'data':serializer.data})
