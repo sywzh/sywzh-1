@@ -18,17 +18,19 @@
     margin-left: 30px;
 }
 .loglist table {
-    width: 800px;
+    width: 980px;
     margin: auto;
     border-collapse: collapse;
     border: none;
 }
-
+.loglist .doSth {
+    width: 240px;
+}
 .loglist td, .loglist th {
     text-align: center;
 }
 .loglist td {
-    padding: 10px 50px;
+    padding: 10px;
 }
 .loglist a {
       text-decoration: none;
@@ -61,6 +63,12 @@
     margin: 30px auto;
     text-align: center;
 }
+.handle h3,.bg-set1 h3 {
+    text-align: left;
+      font-size: 24px;
+  color: #888;
+  margin-left: 30px;
+}
 .handle select,
 .handle input,
 .handle p {
@@ -70,6 +78,20 @@
 .handle .handle-now {
     margin: auto;
     cursor: pointer;
+}
+.loglist .add {
+    background-color: #39a030;
+  color: #fff;
+  display: inline-block;
+  font-size: 20px;
+  line-height: 40px;
+  width: 127px;
+  height: 40px;
+  text-align: center;
+  cursor: pointer;
+  position: absolute;
+  right: 63px;
+  top: -43px;
 }
 .chart {
     display: none;

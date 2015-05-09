@@ -6,105 +6,72 @@
 <link rel="stylesheet" type="text/css" href="{{STATIC_URL}}css/uploadify.css">
 
 <div class='bg-set1'>
-	<div class="demo-box">
-		<!--input id="file_upload" type="file" name="Filedata">
-		<a style="width: 120px;" class="upload-now" href="javascript:$('#file_upload').uploadify('upload','*')">上传主机监控
-</a>
-		<div id="file_uploadQueue" class="uploadifyQueue"></div>
-		<p><span id="id_span_msg"></span></p>
-		<div id="progress"></div-->
-
+	<h3>攻击序列</h3>
+	<div class='loglist'>
+		<div class="log-table">
+		    <table>
+			    <tr>
+				    	<th>文件名</th>
+				    	<th>攻击序列</th>
+				    	<th>支持度</th>
+				    	<th>攻击名</th>
+				    	<th>时间</th>
+				    	<th class="doSth">操作</th>
+			    </tr>
+		       
+		    </table>
+		</div>
 	</div>
 </div>
-<div class="tip">
-	<p>正在处理ing!!!</p>
+<div class='handle'>
+	<h3>攻击类型</h3>
+	<div class='loglist'>
+	<a href="" class="add">添加</a>
+		<div class="log-table">
+		    <table>
+			    <tr>
+				    	<th>攻击类型</th>
+				    	<th class="doSth">操作</th>
+			    </tr>
+		    </table>
+
+		</div>
+	</div>
 </div>
-<!--div class="handle">攻击模式
-	<select class="choose-suanfa">
-		<option value="1">攻击模式1</option>
-		<option value="2">攻击模式2</option>
-		<option value="3">攻击模式3</option>
-		<option value="4">攻击模式4</option>
-	</select>
-	
-	<div class="handle-now">关联分析</div>
-</div-->
 <script type="text/javascript" src="{{STATIC_URL}}js/jquery.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/swfobject.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/jquery.uploadify.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/jquery.uploadify.min.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/chart/highcharts.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/chart/modules/exporting.js"></script>
-<!--script type="text/javascript">
-	var getValue = 0,
-	jiuyuan = $("#jiuyuan");
-	jiuyuan.change(function() {
-		if(jiuyuan.attr("checked")){
-			getValue = 1;
-		}else {
-			getValue = 0;
+<script>
+	$.ajax({
+		url:"/sequence",
+		type : "GET",
+		success : function(data){
+			$.each(data.data,function(i,con){
+				var str = $('<tr><td>'+data.data[i].name+'</td><td>'+data.data[i].attack_sequence+'</td><td>'+data.data[i].support+'</td><td>'+data.data[i].attack_name+'</td><td>'+data.data[i].time+'</td><td><a>修改</a><a>删除</a></td></tr>');
+				$(".bg-set1 table").append(str);
+			})
+		},
+		error : function(){
+			alert("network error!")
+		}
+	});
+
+	$.ajax({
+		url:"/events",
+		type : "GET",
+		success : function(data){
+			$.each(data.data,function(i,con){
+				var str = $('<tr><td>'+data.data[i].name+'</td><td><a>修改</a><a>删除</a></td></tr>');
+				$(".handle table").append(str);
+			})
+		},
+		error : function(){
+			alert("network error!")
 		}
 	})
-
-
-	$(document).ready(function(){
-		$('#file_upload').uploadify({
-			'swf':'{{STATIC_URL}}/uploadify/uploadify.swf?var='+(new Date()).getTime(),
-			'uploader':'{%url "Alg.views.uploadifyScript"%}',
-			'formData':{'someKey':getValue,'someOtherKey':1},
-			'auto':false,
-			'multi':false,
-			'buttonText':'请选择文件',
-			'fileTypeExts':'*.xml;*.xls;*.xlsx',
-			'removeCompleted':false,
-			'fileSizeLimit':10240000,
-			'fileTypeDesc':'支持文档格式',
-			'onInit':function(){},
-			'onUploadStart':function(file){
-				window.fileName = file.name;
-
-				$("#file_upload").uploadify("settings","someOtherKey",2);
-			},
-			'onError':function(event,ID,fileObj,errorObj){
-				$('#id_span_msg').html("上传失败，错误码:"+errorObj.type+" "+errorObj.info);
-			},
-			'onUploadProgress':function(file,bytesUploaded,bytesTotal,totalBytesUploaded,totalBytesTotal){
-				$('#progress').html('已上传 ' +totalBytesUploaded + ' 字节. ' + '共 ' +totalBytesTotal + ' 字节.');
-			},
-			'onUploadSuccess':function(file,data,response){
-				if(response == true){
-					$('#file_upload').uploadify('settings','removeCompleted','true');
-					$.ajax({
-						type:"post",
-						dataType:"json",
-						contentType:"application/x-www-form-urlencoded;charset=UTF-8",
-						url:"{%url 'Alg.views.getTest'%}",
-						data:{
-							name:file.name
-						},
-						success:function(data){
-							var  message = data.message;
-							if(message == "error"){
-								alert("计算推荐支持度失败");
-							}else{
-								alert("推荐支持度范围:"+message);
-							}
-						}
-
-					});
-				}
-
-			},
-			'onUploadError':function(file,errorCode,errorMsg,errorString){
-				alert('文件 ' + file.name + '上传失败.' + ' 详细信息: ' + errorString);
-				
-			}
-
-			
-		});
-
-
-});
-</script-->
+</script>
 {%endblock%}
 

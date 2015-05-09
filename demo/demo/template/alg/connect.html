@@ -15,40 +15,42 @@
 		<div id="file_uploadQueue" class="uploadifyQueue"></div>
 		<p><span id="id_span_msg"></span></p>
 		<div id="progress"></div>
-	</div>
-	从数据库导入
-	<div class="loglist">
-	<div class="log-table">
-        <table>
-            <tr>
-               <th>日志名</th>
-               <th>上传时间</th>
-               <th>操作</th>
-               
-            </tr>
-            {%for log in logs%}
-            <tr>
-               <td>{{log.name}}</td>
-               <td>{{log.time}}</td>
-               <td><a class="import" dataName = {{log.name}}>导入</a></td>
-                
-               
-            </tr>
-            {%endfor%}
-        </table>
-    </div>
-    </div>
-</div>
-<div class="tip">
-	<p>正在处理ing!!!</p>
+	</div>	
 </div>
 <div class="handle">
-	<select class="choose-suanfa">
-		<option value="1">AprioriTime</option>
-		<option value="2">算法2</option>
-		<option value="3">算法3</option>
-		<option value="4">算法4</option>
-	</select>
+        <h3>从数据库导入</h3>
+        <div class="loglist">
+        <div class="log-table">
+            <table>
+                <tr>
+                   <th>日志名</th>
+                   <th>上传时间</th>
+                   <th>操作</th>
+                   
+                </tr>
+                {%for log in logs%}
+                <tr>
+                   <td>{{log.name}}</td>
+                   <td>{{log.time}}</td>
+                   <td><a class="import" dataName = {{log.name}}>导入</a></td>
+                    
+                   
+                </tr>
+                {%endfor%}
+            </table>
+        </div>
+        </div>
+</div>
+<div class="tip">
+	<p>正在计算推荐最小支持度范围</p>
+</div>
+<div class="handle">
+	<!-- <select class="choose-suanfa">
+        <option value="1">AprioriTime</option>
+        <option value="2">算法2</option>
+        <option value="3">算法3</option>
+        <option value="4">算法4</option>
+    </select> -->
 	<p>设定支持度:<input type="text" class="minSupport"></p>
 	<!--p>设定可信度:<input type="text" class="minConf"></p-->
 	<div class="handle-now">关联分析</div>
@@ -154,6 +156,8 @@ $(".handle-now").click(function(){
     //alert(fileName);
 	var minSupport =  $(".minSupport").val();
 	var minConf = $(".minConf").val();
+
+    
 
 	$.ajax({
 		type:"post",
@@ -319,11 +323,16 @@ $(".handle-now").click(function(){
                 })
             }
         }) 
+    
 	});
     $(".import").click(function(){
         name = $(this).attr("dataName");
-        fileName = "demo/media/upload/" + name
+        fileName = "demo/media/upload/" + name;
+        $(document).ajaxStart(function(){
+            $(".tip").show(300);
+        });
         $.ajax({
+
             type:"post",
             dataType:"json",
             contentType:"application/x-www-form-urlencoded;charset=UTF-8",
@@ -340,7 +349,10 @@ $(".handle-now").click(function(){
                 }
 
             }
-        })    
+        })   
+        $(document).ajaxStop(function(){
+            $(".tip").hide(300);
+        }) 
     })
 
 
