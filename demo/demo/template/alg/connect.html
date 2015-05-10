@@ -244,7 +244,6 @@ $(".handle-now").click(function(){
                 			$(".show-guanlian").show();
                 			var data = data.message;
                 			var  d = [];
-
                 			for(var i = 0; i < data.length; i++){
                 				for(var j = 0; j < data[i].length; j++){
                 					d.push(data[i][j]);
@@ -291,7 +290,7 @@ $(".handle-now").click(function(){
                 				}
                 			}
 
-                			console.log(page);
+                			//console.log(page);
                 			$("#prev").click(function(){
                 				if(countPage != 1){
                 					countPage--;
@@ -304,20 +303,19 @@ $(".handle-now").click(function(){
                 			})
 
                 			$("#next").click(function(){
-
                 				if(countPage == page){
                 					$("#next").hide();
                 				}else{
                 					countPage++;
                 					$("#prev").show();
                 					show();
-                					console.log(countPage);
+                					//console.log(countPage);
                 				}
                 			})
                 			show(); 
                 		},
                 		error : function(){
-
+                            alert("network error!");
                 		}
                 	})
                 })

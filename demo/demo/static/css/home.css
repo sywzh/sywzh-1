@@ -81,17 +81,17 @@
 }
 .loglist .add {
     background-color: #39a030;
-  color: #fff;
-  display: inline-block;
-  font-size: 20px;
-  line-height: 40px;
-  width: 127px;
-  height: 40px;
-  text-align: center;
-  cursor: pointer;
-  position: absolute;
-  right: 63px;
-  top: -43px;
+    color: #fff;
+    display: inline-block;
+    font-size: 20px;
+    line-height: 40px;
+    width: 127px;
+    height: 40px;
+    text-align: center;
+    cursor: pointer;
+    position: absolute;
+    right: 63px;
+    top: -43px;
 }
 .chart {
     display: none;

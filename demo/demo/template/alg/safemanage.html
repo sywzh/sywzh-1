@@ -8,33 +8,34 @@
 <div class='bg-set1'>
 	<h3>攻击序列</h3>
 	<div class='loglist'>
-		<div class="log-table">
-		    <table>
-			    <tr>
-				    	<th>文件名</th>
-				    	<th>攻击序列</th>
-				    	<th>支持度</th>
-				    	<th>攻击名</th>
-				    	<th>时间</th>
-				    	<th class="doSth">操作</th>
-			    </tr>
-		       
-		    </table>
+		<div class="log-table1">
+			<table>
+				<tr>
+					<th>文件名</th>
+					<th>攻击序列</th>
+					<th>支持度</th>
+					<th>攻击名</th>
+					<th>时间</th>
+					<th class="doSth">操作</th>
+				</tr>
+
+			</table>
 		</div>
 	</div>
 </div>
 <div class='handle'>
 	<h3>攻击类型</h3>
 	<div class='loglist'>
-	<a href="" class="add">添加</a>
+		<a href="" class="add">添加</a>
 		<div class="log-table">
-		    <table>
-			    <tr>
-				    	<th>攻击类型</th>
-				    	<th class="doSth">操作</th>
-			    </tr>
-		    </table>
-
+			<table>
+				<tr>
+					<th>攻击类型</th>
+					<th class="doSth">操作</th>
+				</tr>
+			</table>
+			<a style="display:none" href="javascript:void(0);" id="prev">上一页</a>	
+			<a href="javascript:void(0);" id="next">下一页</a>
 		</div>
 	</div>
 </div>
@@ -63,15 +64,69 @@
 		url:"/events",
 		type : "GET",
 		success : function(data){
+			var page = Math.ceil((data.data.length/9));
+			var countPage = 1;
+			var l = data.data.length;
+			var d = [];
 			$.each(data.data,function(i,con){
-				var str = $('<tr><td>'+data.data[i].name+'</td><td><a>修改</a><a>删除</a></td></tr>');
-				$(".handle table").append(str);
-			})
-		},
-		error : function(){
-			alert("network error!")
+				d.push(data.data[i]);
+			});
+			function show(){
+				$(".log-table table").empty();
+				var tr = $('<tr><th>攻击类型</th><th class="doSth">操作</th></tr>');
+				$(".log-table table").append(tr);
+				if(countPage < page){
+					for(var i=0;i<9;i++){
+						var str = $('<tr><td>'+data.data[i].name+'</td><td><a>修改</a><a>删除</a></td></tr>');
+						$(".handle table").append(str);
+					}
+				}else{
+					for(var i=0;i<d.length-(page-1)*9;i++){
+					//alert(i);
+					$("#prev").show();
+					var now = (countPage-1)*9+i+1;
+					var str = $('<tr><td>'+data.data[now].name+'</td><td><a>修改</a><a>删除</a></td></tr>');
+					$(".handle table").append(str);
+				}
+			}
 		}
-	})
+		
+
+		$("#prev").click(function(){
+			countPage--;
+			if(countPage != 1){
+				show();
+				$("#next").show();
+				$("#next").show();
+			}else if(countPage == 1){
+				show();
+				$("#next").show();
+				$("#prev").hide();
+			} else if(countPage !== page){
+				show();
+				$("#next").show();
+				$("#next").show();
+			}
+		})
+
+		$("#next").click(function(){
+			countPage++;
+			if(countPage == page){
+				$("#next").hide();
+				$("#prev").show();
+				show();
+			}else{
+				show();
+				$("#prev").show();
+				console.log(countPage);
+			}
+		})
+		show();
+	},
+error : function(){
+	alert("network error!")
+}
+})
 </script>
 {%endblock%}
 
