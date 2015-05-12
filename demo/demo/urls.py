@@ -33,8 +33,10 @@ urlpatterns = patterns('',
     url(r'^deletelog/(\w+)$','Alg.views.deleteLog'),
     url(r'^historylog/$','Log.views.historyLog'),
     url(r'^importdata/$','Alg.views.importData'),
-    url(r'^sequence$',views.SafeManagerDetail.as_view()),
-    url(r'^events$',views.EventsDetail.as_view()),
+    url(r'^sequence$',views.SafeManagerList.as_view()),
+    url(r'^events$',views.EventsList.as_view()),
+    url(r'^sequence/(\w+)$',views.SafeManagerDetail.as_view()),
+    url(r'^events/(\w+)$',views.EventDetails.as_view()),
     # url(r'^demo/', include('demo.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

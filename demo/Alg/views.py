@@ -348,14 +348,57 @@ def importData(request):
 	except:
 		return HttpResponse(simplejson.dumps({'message':'error'}))
 
-class SafeManagerDetail(APIView):
+class SafeManagerList(APIView):
 	def get(self,request,format=None):
 		sequence = SafeManager.objects.filter(user_id = request.user.id)
 		serializer = SafeManagerSerializer(sequence,many = True)
 		return Response({'status':200,'data':serializer.data})
 
-class EventsDetail(APIView):
+class SafeManagerDetail(APIView):
+	def get_object(self,pk):
+		try:
+			return SafeManager.objects.get(pk = pk)
+		except SafeManager.DoesNotExist:
+			raise Http404
+	def put(self,request,pk,format = None):
+		safe = self.get_object(pk)
+		serializer = SafeManagerSerializer(safe,data = request.data)
+		if serializer.is_valid():
+			serializer.save()
+			return Response({'status':0})
+		return Response({"status":400,'data':serializer.errors})
+	def delete(self,request,pk,format = None):
+		safe = self.get_object(pk)
+		safe.delete()
+		return Response({'status':0})
+
+class EventsList(APIView):
 	def get(self,request,format = None):
 		events = Events.objects.all()
 		serializer = EventsSerializer(events,many = True)
 		return Response({'status':200,'data':serializer.data})
+
+	def post(self,request,format = None):
+		serializer = EventsSerializer(data = request.data)
+		if serializer.is_valid():
+			serializer.save()
+			return Response({'status':0})
+		return Response({'status':400,'data':serializer.errors})
+
+class EventDetails(APIView):
+	def get_object(self,pk):
+		try:
+			return Events.objects.get(pk = pk)
+		except Events.DoesNotExist:
+			raise Http404
+	def put(self,request,pk,format = None):
+		event = self.get_object(pk)
+		serializer = EventsSerializer(event,data = request.data)
+		if serializer.is_valid():
+			serializer.save()
+			return Response({'status':0})
+		return Response({'status':400,'data':serializer.errors})
+	def delete(self,request,pk,format = None):
+		event = self.get_object(pk)
+		event.delete()
+		return Response({'status':0})
