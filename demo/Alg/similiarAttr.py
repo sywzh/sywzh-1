@@ -86,13 +86,13 @@ def managePort(srcport1,srcport2):
 	else:
 		return 0
 
-def manageData(data1,data2):
+def manageData(data1,data2,a,b,c,d,e):
 	time = manageTime(data1[0],data2[0])
 	srcip = manageIp(data1[1],data2[1])
 	dstip = manageIp(data1[2],data2[2])
 	srcport = managePort(data1[3],data2[3])
 	dstport = managePort(data1[4],data2[4])
-	return float(time)*0.03+float(srcip)*0.03+float(dstip)*0.03+float(srcport)*0.05+float(dstport)*0.05
+	return float(time)*a/10+float(srcip)*b/10+float(dstip)*c/10+float(srcport)*d+float(dstport)*e
 
 def resultData(data_list):
 	result = 0
@@ -103,11 +103,11 @@ def resultData(data_list):
 		result = result + data_list[i]
 	return result/len_data_list
 
-def analysisData(data):
+def analysisData(data,a=0.3,b=0.3,c=0.3,d=0.05,e=0.05):
 	len_data = len(data)
 	data_list = []
 	for i in range(len_data-1):
-		getdata = manageData(data[i],data[i+1])
+		getdata = manageData(data[i],data[i+1],a,b,c,d,e)
 		data_list.append(getdata)
 	return resultData(data_list)
 

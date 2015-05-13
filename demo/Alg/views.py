@@ -18,6 +18,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from Alg.serializers import SafeManagerSerializer,EventsSerializer
+from Log import log
 
 @lrender('alg/warnlog.html')
 @login_required
@@ -56,6 +57,7 @@ def uploadifyScript(request):
 	else:
 		result,buf = profileUpload(file)
 		writefile(buf,file.name)
+		log(request.user.id,'2',file.name)
 	return HttpResponse(simplejson.dumps({'message':'ok'}))
 
 def wtFile(buf,name):
@@ -207,12 +209,12 @@ def dataAnalysis(request):
 	name = request.POST.get("name")
 	minSupport = request.POST.get("minSupport")
 	try:
-
 		key,value,results = manageData(name,minSupport)
 		key = json.dumps(key)
 		value = json.dumps(value)
 		storageAnalysis(request.user,name,results,minSupport)
 		results = json.dumps(results)
+		log(request.user.id,'4',name.split('/')[-1])
 		return HttpResponse(simplejson.dumps({'message':'ok','key':key,'value':value,"results":results}))
 	except:
 		return HttpResponse(simplejson.dumps({'message':'error'}))
@@ -229,8 +231,7 @@ def similiarData(data):
 		result.append(attrs)
 	return result
 
-def traversal(attrs,name,value = 0.94):
-	attrs = [[u"FW-NAT",u"dos攻击"],[u"dos攻击",u"FW-NAT"]]
+def traversal(attrs,name,value = 0.94,time = 0.3,srcip=0.3,dstip=0.3,srcport=0.05,dstport=0.05):
 	result = []
 	result_attrs = []
 	data = xlrd.open_workbook(name)
@@ -255,7 +256,7 @@ def traversal(attrs,name,value = 0.94):
 					for k in range(i,i+flag):
 						similiar.append(table.row_values(k))
 						connect.append(table.row_values(k))
-					if analysisData(similiarData(similiar)) > value:
+					if analysisData(similiarData(similiar),time,srcip,dstip,srcport,dstport) > value:
 						count = count + 1
 						for k in range(i,i+flag):
 							attr_result.append(table.row_values(k))
@@ -269,11 +270,36 @@ def traversal(attrs,name,value = 0.94):
 def getAttr(request):
 	if not request.is_ajax() or request.method != 'POST':
 		raise Http404
-	attrs = [[u"FW-NAT",u"dos攻击"],[u"dos攻击",u"FW-NAT"]]
 	filename = request.POST.get("fileName")
 	results = request.POST.get("results")
+	attrs = []
+	for attr in simplejson.loads(results):
+		attrs.append(attr[0:-1])
 	result,attr_result = traversal(attrs,filename)
 	return HttpResponse(simplejson.dumps({'message':result}))
+
+def quantitative(request):
+	if not request.is_ajax() or request.method != 'POST':
+		raise Http404
+	filename = request.POST.get("fileName")
+	results = request.POST.get("results")
+	flag = request.POST.get("flag")
+	attrs = []
+	for attr in simplejson.loads(results):
+		attrs.append(attr[0:-1])
+	log(request.user.id,'5',filename)
+	if flag == 1:
+		time = request.POST.get("time")
+		srcip = request.POST.get("srcip")
+		dstip = request.POST.get("dstip")
+		srcport = request.POST.get("srcport")
+		dstport = request.POST.get("dstport")
+		value = request.POST.get("value")
+		result,attr_result = traversal(attrs,filename,value,time,srcip,dstip,srcport,dstport)
+		return HttpResponse(simplejson.dumps({'message':attr_result}))
+	if flag == 0:
+		result,attr_result = traversal(attrs,filename)
+		return HttpResponse(simplejson.dumps({'message':attr_result}))
 
 @login_required
 def getTest(request):
@@ -314,6 +340,7 @@ def downLoad(request,sid):
 		name = obj.name
 		buf = readfile(name)
 		name = name.encode('utf8')
+		log(request.user.id,'3',name)
 		response = HttpResponse(buf,mimetype = 'application/octet-stream')
 		response['Content-Disposition'] = 'attachment;filename=%s' % name
 		return response
