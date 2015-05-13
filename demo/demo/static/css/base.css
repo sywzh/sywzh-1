@@ -86,7 +86,7 @@ body {
       left: 50%;
       top: -18px;
 }
-.handle-now {
+.handle-now  , .lianghuanow{
       display: block;
       width: 80px;
       height: 30px;

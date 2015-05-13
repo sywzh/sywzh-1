@@ -288,16 +288,23 @@ def quantitative(request):
 	for attr in simplejson.loads(results):
 		attrs.append(attr[0:-1])
 	log(request.user.id,'5',filename)
-	if flag == 1:
+	if flag == '1':
 		time = request.POST.get("time")
 		srcip = request.POST.get("srcip")
 		dstip = request.POST.get("dstip")
 		srcport = request.POST.get("srcport")
 		dstport = request.POST.get("dstport")
 		value = request.POST.get("value")
+		time = simplejson.loads(time)
+		srcip = simplejson.loads(srcip)
+		dstip = simplejson.loads(dstip)
+		srcport = simplejson.loads(srcport)
+		dstport = simplejson.loads(dstport)
+		value = simplejson.loads(value)
 		result,attr_result = traversal(attrs,filename,value,time,srcip,dstip,srcport,dstport)
 		return HttpResponse(simplejson.dumps({'message':attr_result}))
-	if flag == 0:
+	if flag == '0':
+		print attrs
 		result,attr_result = traversal(attrs,filename)
 		return HttpResponse(simplejson.dumps({'message':attr_result}))
 
@@ -389,11 +396,12 @@ class SafeManagerDetail(APIView):
 			raise Http404
 	def put(self,request,pk,format = None):
 		safe = self.get_object(pk)
-		serializer = SafeManagerSerializer(safe,data = request.data)
-		if serializer.is_valid():
-			serializer.save()
+		try:
+			safe.attack_name = request.data['name']
+			safe.save()
 			return Response({'status':0})
-		return Response({"status":400,'data':serializer.errors})
+		except:
+			return Response({"status":400,'data':'error'})
 	def delete(self,request,pk,format = None):
 		safe = self.get_object(pk)
 		safe.delete()

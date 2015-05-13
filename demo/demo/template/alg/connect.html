@@ -45,6 +45,7 @@
 	<p>正在计算推荐最小支持度范围</p>
 </div>
 <div class="handle">
+<h3>关联分析</h3>
 	<!-- <select class="choose-suanfa">
         <option value="1">AprioriTime</option>
         <option value="2">算法2</option>
@@ -73,6 +74,28 @@
 	<a href="javascript:void(0);" id="prev">上一页</a>	
 	<a href="javascript:void(0);" id="next">下一页</a>
 </div>
+
+
+<div class="lianghua handle">
+<h3>量化分析</h3>
+    <input type="checkbox" name="flag" class="flag" value="默认">默认
+    <br />
+    时间量化度:<input type="text" class="time"><br />
+    源IP量化度:<input type="text" class="srcip"><br />
+    目的IP量化度:<input type="text" class="dstip"><br />
+    源端口量化度:<input type="text" class="srcport"><br />
+    目的端口量化度:<input type="text" class="dstport"><br />
+    量化分析度 : <input type="text" class="lhvalue">
+    <!--p>设定可信度:<input type="text" class="minConf"></p-->
+    <div class="lianghuanow">量化分析</div>
+</div>
+
+<div class="show-lianghua handle">
+    <table class="table">   </table>    
+    <a href="javascript:void(0);" id="prev1">上一页</a> 
+    <a href="javascript:void(0);" id="next1">下一页</a>
+</div>
+
 <script type="text/javascript" src="{{STATIC_URL}}js/jquery.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/swfobject.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/jquery.uploadify.js"></script>
@@ -353,7 +376,232 @@ $(".handle-now").click(function(){
         }) 
     })
 
+var t  = false;
+var flag = 1;
+$(".flag").click(function(){
+    if(t == false){
+    $(".time").attr("disabled","true");
+    $(".srcip").attr("disabled","true");
+    $(".dstip").attr("disabled","true");
+    $(".srcport").attr("disabled","true");
+    $(".dstport").attr("disabled","true");
+    $(".lhvalue").attr("disabled","true");
+    flag = 0;
+    t = true;
+    } else {
+        $(".time").removeAttr("disabled"); 
+        $(".srcip").removeAttr("disabled");
+        $(".dstip").removeAttr("disabled");
+        $(".srcport").removeAttr("disabled");
+        $(".dstport").removeAttr("disabled");
+        $(".lhvalue").removeAttr("disabled");
+        flag = 1;
+        t = false;
+    }
+})
 
+
+$(".lianghuanow").click(function(){
+    if(flag == 0){
+        var name =  fileName;
+        var results = chartresults;
+        $.ajax({
+            url : "/quantitative/",
+            type : "POST",
+            data :{
+                flag : 0,
+                fileName : name,
+                results : results
+            },
+            success : function(data){
+                
+                //console.log(data);
+                
+                $(".show-lianghua").show();
+
+                var data = JSON.parse(data);
+                data = data.message;
+
+                console.log(data)
+                var  d = [];
+                for(var i = 0; i < data.length; i++){
+                    for(var j = 0; j < data[i].length; j++){
+                        d.push(data[i][j]);
+                    }
+                }
+
+                var page = Math.ceil((d.length/99));
+                var countPage = 1;
+                var l = d.length;
+                var m = d[0].length
+                $("#prev1").hide();
+                function show(){
+                    $(".show-lianghua .table").empty();
+                    var th = $("<th><td>系统类型</td><td>接收时间</td><td>等级</td><td>源地址</td><td>源端口</td><td>源用户名称</td><td>目的地址</td><td>目的端口</td><td>设备地址</td><td>设备类型</td><td>事件名称</td></th>");
+                    $(".show-lianghua .table").append(th);
+                    if(countPage < page){
+                        for(var i=0;i<99;i++){
+
+                            $(".show-lianghua .table").append("<tr></tr>");
+                            var b = document.createElement("td");
+                            b.innerHTML = (countPage-1)*99+i+1;
+                            $(".show-lianghua .table tr")[i].appendChild(b);
+
+                            for(var j = 0;j<m;j++){
+                                var a = document.createElement("td");
+                                a.innerHTML = d[(countPage-1)*99+i][j];
+                                $(".show-lianghua .table tr")[i].appendChild(a);
+                            }
+                        }
+                    }else{
+                        for(var i=0;i<d.length-(page-1)*99;i++){
+                            $("#prev1").show();
+                            $(".show-lianghua .table").append("<tr></tr>");
+                            var b = document.createElement("td");
+                            b.innerHTML = (countPage-1)*99+i+1;
+                            $(".show-lianghua .table tr")[i].appendChild(b);
+
+                            for(var j = 0;j<m;j++){
+                                var a = document.createElement("td");
+                                a.innerHTML = d[(countPage-1)*99+i][j];
+                                $(".show-lianghua .table tr")[i].appendChild(a);
+                            }
+                        }
+                    }
+                }
+
+                //console.log(page);
+                $("#prev1").click(function(){
+                    countPage--;
+                    if(countPage != 1){
+                        show();
+                    }else {
+                        $("#prev1").hide();
+                    } if(countPage !== page){
+                        $("#next1").show();
+                    }
+                })
+
+                $("#next1").click(function(){
+                    countPage++;
+                    if(countPage == page){
+                        $("#next1").hide();
+                    }else{
+                        $("#prev1").show();
+                        show();
+                        //console.log(countPage);
+                    }
+                })
+                show(); 
+            }
+        })
+    }
+    else {
+        var time = $(".time").val(),
+            srcip = $(".srcip").val(),
+            dstip = $(".dstip").val(),
+            srcport = $(".srcport").val(),
+            dstport = $(".dstport").val(),
+            value = $(".lhvalue").val();
+        var name =  fileName;
+        var results = chartresults;
+        $.ajax({
+            url : "/quantitative/",
+            type : "POST",
+            data :{
+                flag : 1,
+                fileName : name,
+                results : results,
+                srcip : srcip,
+                dstip : dstip,
+                srcport : srcport,
+                dstport : dstport,
+                value : value,
+                time:time
+            },
+            success : function(data){
+               $(".show-lianghua").show();
+
+                               var data = JSON.parse(data);
+                               data = data.message;
+
+                               console.log(data)
+                               var  d = [];
+                               for(var i = 0; i < data.length; i++){
+                                   for(var j = 0; j < data[i].length; j++){
+                                       d.push(data[i][j]);
+                                   }
+                               }
+
+                               var page = Math.ceil((d.length/99));
+                               var countPage = 1;
+                               var l = d.length;
+                               var m = d[0].length
+                               $("#prev1").hide();
+                               function show(){
+                                   $(".show-lianghua .table").empty();
+                                   var th = $("<th><td>系统类型</td><td>接收时间</td><td>等级</td><td>源地址</td><td>源端口</td><td>源用户名称</td><td>目的地址</td><td>目的端口</td><td>设备地址</td><td>设备类型</td><td>事件名称</td></th>");
+                                   $(".show-lianghua .table").append(th);
+                                   if(countPage < page){
+                                       for(var i=0;i<99;i++){
+
+                                           $(".show-lianghua .table").append("<tr></tr>");
+                                           var b = document.createElement("td");
+                                           b.innerHTML = (countPage-1)*99+i+1;
+                                           $(".show-lianghua .table tr")[i].appendChild(b);
+
+                                           for(var j = 0;j<m;j++){
+                                               var a = document.createElement("td");
+                                               a.innerHTML = d[(countPage-1)*99+i][j];
+                                               $(".show-lianghua .table tr")[i].appendChild(a);
+                                           }
+                                       }
+                                   }else{
+                                       for(var i=0;i<d.length-(page-1)*99;i++){
+                                           $("#prev1").show();
+                                           $(".show-lianghua .table").append("<tr></tr>");
+                                           var b = document.createElement("td");
+                                           b.innerHTML = (countPage-1)*99+i+1;
+                                           $(".show-lianghua .table tr")[i].appendChild(b);
+
+                                           for(var j = 0;j<m;j++){
+                                               var a = document.createElement("td");
+                                               a.innerHTML = d[(countPage-1)*99+i][j];
+                                               $(".show-lianghua .table tr")[i].appendChild(a);
+                                           }
+                                       }
+                                   }
+                               }
+
+                               //console.log(page);
+                               $("#prev1").click(function(){
+                                   countPage--;
+                                   if(countPage != 1){
+                                       show();
+                                   }else {
+                                       $("#prev1").hide();
+                                   } if(countPage !== page){
+                                       $("#next1").show();
+                                   }
+                               })
+
+                               $("#next1").click(function(){
+                                   countPage++;
+                                   if(countPage == page){
+                                       $("#next1").hide();
+                                   }else{
+                                       $("#prev1").show();
+                                       show();
+                                       //console.log(countPage);
+                                   }
+                               })
+                               show(); 
+            }
+        })
+
+    }
+    
+})
 
 });
 </script>

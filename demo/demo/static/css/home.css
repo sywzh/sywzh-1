@@ -75,9 +75,12 @@
     display: inline-block;
     margin: 20px 0;
 }
-.handle .handle-now {
+.handle .handle-now  , .lianghuanow{
     margin: auto;
     cursor: pointer;
+}
+.log-table1 {
+  text-align: center;
 }
 .loglist .add {
     background-color: #39a030;
@@ -121,11 +124,35 @@
     color:green;
     margin: auto;
 }
-.show-guanlian {
+.show-guanlian,.show-lianghua {
     display: none;
       width: 1088px;
 }
-.show-guanlian td{
+.show-guanlian td , .show-lianghua td{
     border-right: 1px solid green;  
     border-bottom: 1px solid green
+}
+
+.dialog {
+  width: 600px;
+  background: #ccc;
+  position: fixed;
+  left: 50%;
+  margin-left: -300px;
+  top: 25%;
+}
+.dialog input {
+  margin: auto;
+  margin-top: 60px;
+
+  height: 40px;
+  width: 480px;
+  display: block;
+}
+.dialog .diaok {
+  display: block;
+  width: 50px;
+  font-size: 24px;
+  margin: auto;
+  text-align: center;
 }

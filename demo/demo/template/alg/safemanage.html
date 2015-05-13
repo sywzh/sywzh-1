@@ -18,15 +18,16 @@
 					<th>时间</th>
 					<th class="doSth">操作</th>
 				</tr>
-
 			</table>
+			<a style="display:none" href="javascript:void(0);" id="prev1">上一页</a>	
+			<a href="javascript:void(0);" id="next1">下一页</a>
 		</div>
 	</div>
 </div>
+
 <div class='handle'>
 	<h3>攻击类型</h3>
 	<div class='loglist'>
-		<a href="" class="add">添加</a>
 		<div class="log-table">
 			<table>
 				<tr>
@@ -35,25 +36,155 @@
 				</tr>
 			</table>
 			<a style="display:none" href="javascript:void(0);" id="prev">上一页</a>	
-			<a href="javascript:void(0);" id="next">下一页</a>
+			<a style="display:none" href="javascript:void(0);" id="next">下一页</a>
 		</div>
 	</div>
 </div>
+<div class="dialog"></div>
+
 <script type="text/javascript" src="{{STATIC_URL}}js/jquery.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/swfobject.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/jquery.uploadify.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/jquery.uploadify.min.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/chart/highcharts.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/chart/modules/exporting.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/cookie.js"></script>
 <script>
+
+	var csrftoken = $.cookie('csrftoken');
+
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+
 	$.ajax({
 		url:"/sequence",
 		type : "GET",
 		success : function(data){
-			$.each(data.data,function(i,con){
+             var page = Math.ceil((data.data.length/9));
+ 			var countPage = 1;
+ 			if(page == countPage){
+ 				$("#prev1").hide();
+ 				$("#next1").hide();
+ 			} else {
+ 				$("#next1").show();
+ 			}
+ 			var l = data.data.length;
+ 			var d = [];
+ 			$.each(data.data,function(i,con){
+ 				d.push(data.data[i]);
+ 			});
+ 			function show(){
+ 				$(".log-table1 table").empty();
+ 				var tr = $('<tr><th>文件名</th><th>攻击序列</th><th>支持度</th><th>攻击名</th><th>时间</th><th class="doSth">操作</th></tr>');
+ 				$(".log-table1 table").append(tr);
+ 				if(countPage <= page){
+
+ 					for(var i=0;i<9;i++){
+ 						var str = $('<tr><td>'+data.data[i].name+'</td><td>'+data.data[i].attack_sequence+'</td><td>'+data.data[i].support+'</td><td>'+data.data[i].attack_name+'</td><td>'+data.data[i].time+'</td><td><a dataid="'+data.data[i].id+'" class="change1">修改</a><a dataid="'+data.data[i].id+'" class="delete1">删除</a></td></tr>');
+ 						$(".log-table1 table").append(str);
+ 					}
+ 				}else{
+ 					for(var i=0;i<d.length-(page-1)*9;i++){
+ 					//alert(i);
+ 					$("#prev1").show();
+ 					var now = (countPage-1)*9+i+1;
+ 					var str = $('<tr><td>'+data.data[now].name+'</td><td>'+data.data[now].attack_sequence+'</td><td>'+data.data[now].support+'</td><td>'+data.data[now].attack_name+'</td><td>'+data.data[now].time+'</td><td><a dataid="'+data.data[now].id+'" class="change1">修改</a><a dataid="'+data.data[i].id+'" class="delete1">删除</a></td></tr>');
+ 					$(".log-table1 table").append(str);
+ 				}
+ 			}
+
+
+ 			$(".change1").click(function(){
+ 				var str = $('<input type="text" /><span class="diaok">OK</span>');
+ 				$(".dialog").append(str);
+ 				$(".dialog").css("width",600)
+ 				var id= $(this).attr("dataid");
+ 				
+ 				$(".diaok").click(function(){
+ 					var con = $(".dialog input").val();
+ 					//alert(id+"::"+con)
+ 					$.ajax({
+ 						url : "/sequence/" + id,
+ 						type : "put",
+ 						data : {
+ 							name : con
+ 						},
+ 						success : function(data){
+ 							if(data.status == 0){
+ 								window.location.reload()
+ 							}
+ 						},
+ 						error : function(){
+
+ 						}
+ 					})
+ 				})
+ 				
+ 			})
+
+ 			$(".delete1").click(function(){
+ 				var id= $(this).attr("dataid");
+ 				$.ajax({
+ 					url : "/sequence/" + id,
+ 					type : "delete",
+ 					success  : function(data){
+ 						if(data.status == 0){
+ 							window.location.reload()
+ 						} else {
+ 							alert("error")
+ 						}
+ 					}
+ 				})
+ 				
+ 				
+ 			})
+ 		}
+ 		
+
+ 		$("#prev1").click(function(){
+ 			countPage--;
+ 			if(countPage != 1){
+ 				show();
+ 				$("#next1").show();
+ 				$("#next1").show();
+ 			}else if(countPage == 1){
+ 				show();
+ 				$("#next1").show();
+ 				$("#prev1").hide();
+ 			} else if(countPage !== page){
+ 				show();
+ 				$("#next1").show();
+ 				$("#next1").show();
+ 			}
+ 		})
+
+ 		$("#next1").click(function(){
+ 			countPage++;
+ 			if(countPage == page){
+ 				$("#next1").hide();
+ 				$("#prev1").show();
+ 				show();
+ 			}else{
+ 				show();
+ 				$("#prev1").show();
+ 				console.log(countPage);
+ 			}
+ 		})
+ 		show();
+
+			/*$.each(data.data,function(i,con){
 				var str = $('<tr><td>'+data.data[i].name+'</td><td>'+data.data[i].attack_sequence+'</td><td>'+data.data[i].support+'</td><td>'+data.data[i].attack_name+'</td><td>'+data.data[i].time+'</td><td><a>修改</a><a>删除</a></td></tr>');
 				$(".bg-set1 table").append(str);
-			})
+			})*/
 		},
 		error : function(){
 			alert("network error!")
@@ -66,6 +197,12 @@
 		success : function(data){
 			var page = Math.ceil((data.data.length/9));
 			var countPage = 1;
+			if(page == countPage){
+ 				$("#prev").hide();
+ 				$("#next").hide();
+ 			} else {
+ 				$("#next").show();
+ 			}
 			var l = data.data.length;
 			var d = [];
 			$.each(data.data,function(i,con){
@@ -77,7 +214,7 @@
 				$(".log-table table").append(tr);
 				if(countPage < page){
 					for(var i=0;i<9;i++){
-						var str = $('<tr><td>'+data.data[i].name+'</td><td><a>修改</a><a>删除</a></td></tr>');
+						var str = $('<tr><td>'+data.data[i].name+'</td><td><a dataid="'+data.data[i].id+'" class="change2">修改</a><a dataid="'+data.data[i].id+'" class="delete2">删除</a></td></tr>');
 						$(".handle table").append(str);
 					}
 				}else{
@@ -85,10 +222,57 @@
 					//alert(i);
 					$("#prev").show();
 					var now = (countPage-1)*9+i+1;
-					var str = $('<tr><td>'+data.data[now].name+'</td><td><a>修改</a><a>删除</a></td></tr>');
+					var str = $('<tr><td>'+data.data[now].name+'</td><td><a dataid="'+data.data[i].id+'" class="change2">修改</a><a dataid="'+data.data[i].id+'" class="delete2">删除</a></td></tr>');
 					$(".handle table").append(str);
 				}
 			}
+
+			$(".change2").click(function(){
+				var str = $('<input type="text" /><span class="diaok">OK</span>');
+				$(".dialog").append(str);
+				$(".dialog").css("width",600)
+				var id= $(this).attr("dataid");
+				
+				$(".diaok").click(function(){
+					var con = $(".dialog input").val();
+					//alert(id+"::"+con)
+					$.ajax({
+						url : "/events/" + id,
+						type : "put",
+						data : {
+							name : con
+						},
+						success : function(data){
+							if(data.status == 0){
+								window.location.reload()
+							}
+						},
+						error : function(){
+
+						}
+					})
+				})
+				
+			})
+
+			$(".delete2").click(function(){
+				var id= $(this).attr("dataid");
+				$.ajax({
+					url : "/events/" + id,
+					type : "delete",
+					success  : function(data){
+						if(data.status == 0){
+							window.location.reload()
+						} else {
+							alert("error")
+						}
+					}
+				})
+				
+				
+			})
+
+
 		}
 		
 
@@ -123,9 +307,9 @@
 		})
 		show();
 	},
-error : function(){
-	alert("network error!")
-}
+	error : function(){
+		alert("network error!")
+	}
 })
 </script>
 {%endblock%}
