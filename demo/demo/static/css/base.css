@@ -24,7 +24,7 @@ body {
 }
 .menu {
     /*给他设置一个宽度，不要让它超出*/
-    width:600px;
+    width:870px;
     left: 78px;
     position: relative;
     top:-20px;

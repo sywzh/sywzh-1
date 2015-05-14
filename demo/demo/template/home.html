@@ -4,6 +4,53 @@
 <link rel="stylesheet" type="text/css" href="../static/css/home.css"/>
 <div class='bg-set1'>
 
-</div>
+	<div class="descp">
+	<h3>系统简介</h3>
+		<p>多源告警信息的关联分析系统主要是针对某单位(国家保密单位)的IDS、防火墙等设备产生的告警日志并对其进行高效的关联分析而设计的。主要目的是挖掘出新型的多步攻击序列，并采取有效措施进行防御，从而提高整个网络环境下的信息安全。</p>
+		<img src="../static/images/home.jpg">
+	</div>
 
+	</div>
+	<div class='bg-set1'>
+	<div class="changepass">
+		<h3>修改密码</h3>
+		<div class="changepassword">
+			原密码 :  <input class="oldpass" type="password" /><br>
+			新密码 :  <input class="nowpass1" type="password" /><br>
+			新密码 :  <input class="nowpass2" type="password" /><br>
+			<span class="changeok">确认</span>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery.js"></script>
+<script type="text/javascript">
+	$(".changeok").click(function(){
+		var old = $(".oldpass").val(),
+			now1 = $(".nowpass1").val(),
+			now2 = $(".nowpass2").val();
+		if(now1 != now2){
+			alert("新密码两次输入不同!")
+		} else {
+			$.ajax({
+				url : "/user/changepw/",
+				type : "POST",
+				data : {
+					old_password : old,
+					new_password : now2
+				},
+				success : function(data){
+					var data = JSON.parse(data);
+					if(data.message == "ok"){
+						alert("修改成功");
+					} else if(data.message == "error"){
+						alert("修改失败");
+					}
+				},
+				error : function(){
+					alert("network error!")
+				}
+			})
+		}
+	})
+</script>
 {%endblock%}

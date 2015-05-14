@@ -349,9 +349,8 @@ $(".handle-now").click(function(){
     $(".import").click(function(){
         name = $(this).attr("dataName");
         fileName = "demo/media/upload/" + name;
-        $(document).ajaxStart(function(){
             $(".tip").show(300);
-        });
+        
         $.ajax({
 
             type:"post",
@@ -367,13 +366,12 @@ $(".handle-now").click(function(){
                     alert("计算推荐支持度失败");
                 }else{
                     alert("推荐支持度范围:"+message);
+                    $(".tip").hide(300);
                 }
 
             }
         })   
-        $(document).ajaxStop(function(){
-            $(".tip").hide(300);
-        }) 
+            
     })
 
 var t  = false;

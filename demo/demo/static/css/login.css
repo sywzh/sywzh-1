@@ -62,3 +62,15 @@ background-size: cover;
     margin: auto;
     display: none;
 }
+.basetop {
+      height: 84px;
+      width: 658px;
+      position: relative;
+      top: 100px;
+      margin: auto;
+}
+.basetop span {
+  font-size: 54px;
+  color: #fff;
+  display: inline-block;
+}
