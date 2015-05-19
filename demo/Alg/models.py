@@ -3,12 +3,12 @@ from django.contrib.auth.models import User
 from datetime import datetime
 
 class WarnLog(models.Model):
-	user = models.ForeignKey(User)
+	user = models.ForeignKey(User,null = True)
 	name = models.CharField(max_length = 20)
-	time = models.DateTimeField(default = datetime.now)
+	time = models.DateTimeField(default = datetime.now())
 
 class WarnNine(models.Model):
-	user = models.ForeignKey(User)
+	user = models.ForeignKey(User,null = True)
 	name = models.CharField(max_length = 60)
 	systemtype = models.CharField(max_length = 15)
 	gettime = models.CharField(max_length = 20)
@@ -23,12 +23,12 @@ class WarnNine(models.Model):
 	event = models.CharField(max_length = 300)
 
 class SafeManager(models.Model):
-	user = models.ForeignKey(User)
+	user = models.ForeignKey(User,null = True)
 	name = models.CharField(max_length = 40)
 	support = models.FloatField()
 	attack_sequence = models.CharField(max_length = 100)
 	attack_name = models.CharField(max_length = 60,default = '')
-	time = models.DateTimeField(default = datetime.now)
+	time = models.DateTimeField(default = datetime.now())
 
 class Events(models.Model):
 	name = models.CharField(max_length = 100)

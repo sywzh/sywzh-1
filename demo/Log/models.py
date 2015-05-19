@@ -19,7 +19,7 @@ class Log(models.Model):
 	user = models.ForeignKey(User)
 	name = models.CharField(max_length = 40,null = True,blank = True)
 	operation = models.CharField(max_length = 2,choices = OP_CHANGES)
-	time = models.DateTimeField(default = datetime.now)
+	time = models.DateTimeField(default = datetime.now())
 
 	def Status(self):
 		return dict(self.OP_CHANGES)[self.operation]

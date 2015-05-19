@@ -19,6 +19,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from Alg.serializers import SafeManagerSerializer,EventsSerializer
 from Log import log
+import xlwt
+from random import Random
 
 @lrender('alg/warnlog.html')
 @login_required
@@ -266,6 +268,43 @@ def traversal(attrs,name,value = 0.94,time = 0.3,srcip=0.3,dstip=0.3,srcport=0.0
 		result_attrs.append(attr_result)
 	return result,result_attrs
 
+def random_str(randomlength=32):
+	str = ''
+	chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789'
+	length = len(chars) - 1
+	random = Random()
+	for i in range(randomlength):
+		str+=chars[random.randint(0, length)]
+	return str
+
+def get_name():
+	name = random_str(8)
+	return name + '.xls'
+
+def set_cache(results):
+	wb = xlwt.Workbook(encoding = 'utf-8')
+	sheet = wb.add_sheet(u'sheet1')
+	sheet.write(0,0,u'系统类型')
+	sheet.write(0,1,u'接收时间')
+	sheet.write(0,2,u'等级')
+	sheet.write(0,3,u'源地址')
+	sheet.write(0,4,u'源端口')
+	sheet.write(0,5,u'源用户名称')
+	sheet.write(0,6,u'目的地址')
+	sheet.write(0,7,u'目的端口')
+	sheet.write(0,8,u'设备地址')
+	sheet.write(0,9,u'设备类型')
+	sheet.write(0,10,u'事件名称')
+	row = 1
+	for result in results:
+		for data in result:
+			for i in range(11):
+				sheet.write(row,i,data[i])
+			row = row + 1
+	name = get_name()
+	wb.save(name)
+	return name
+
 @login_required
 def getAttr(request):
 	if not request.is_ajax() or request.method != 'POST':
@@ -276,7 +315,8 @@ def getAttr(request):
 	for attr in simplejson.loads(results):
 		attrs.append(attr[0:-1])
 	result,attr_result = traversal(attrs,filename)
-	return HttpResponse(simplejson.dumps({'message':result}))
+	name = set_cache(result)
+	return HttpResponse(simplejson.dumps({'message':result,'name':name}))
 
 def quantitative(request):
 	if not request.is_ajax() or request.method != 'POST':
@@ -302,11 +342,22 @@ def quantitative(request):
 		dstport = simplejson.loads(dstport)
 		value = simplejson.loads(value)
 		result,attr_result = traversal(attrs,filename,value,time,srcip,dstip,srcport,dstport)
-		return HttpResponse(simplejson.dumps({'message':attr_result}))
+		name = set_cache(attr_result)
+		return HttpResponse(simplejson.dumps({'message':attr_result,'name':name}))
 	if flag == '0':
-		print attrs
 		result,attr_result = traversal(attrs,filename)
-		return HttpResponse(simplejson.dumps({'message':attr_result}))
+		name = set_cache(attr_result)
+		return HttpResponse(simplejson.dumps({'message':attr_result,'name':name}))
+
+def exportLog(request,name):
+	try:
+		buf = readfile(name)
+		name = name.encode('utf8')
+		response = HttpResponse(buf,mimetype = 'application/octet-stream')
+		response['Content-Disposition'] = 'attachment;filename=%s' % name
+		return response
+	except:
+		raise Http404
 
 @login_required
 def getTest(request):
