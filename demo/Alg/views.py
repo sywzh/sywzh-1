@@ -10,7 +10,7 @@ from django.utils import simplejson
 from Alg.models import *
 import xlrd
 import os
-from trans import manageData,minSupportTest
+from trans import manageData,minSupportTest,setEvents
 import json
 from django.core import serializers
 from similiarAttr import analysisData
@@ -43,6 +43,7 @@ def writefile(buf,name):
 	fp.close()
 	cmd = 'chmod 777 ' + name
 	os.system(cmd)
+	setEvents(name)
 
 def readfile(name):
 	name = 'demo/media/upload/' + name
@@ -68,6 +69,7 @@ def wtFile(buf,name):
 	fp.close()
 	cmd = 'chmod 777 ' + name
 	os.system(cmd)
+	setEvents(name)
 
 @login_required
 def uploadScript(request):

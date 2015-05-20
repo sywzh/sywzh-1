@@ -86,57 +86,6 @@ def storageEvents(event):
 			op = Events(name = event_type)
 			op.save()
 
-def getExcel(name):
-	wb = xlrd.open_workbook(name)
-	table = wb.sheets()[0]
-	col_data = table.col_values(9)
-	eventMsg = []
-	len_data = len(col_data)
-	storage = []
-	for i in range(1,len_data):
-		events = []
-		if col_data[i] != u"/服务器/Windows" and col_data[i] != u"/服务器":
-			event = table.cell_value(i,10)
-			try:
-				storage.append(event)
-				events.append(table.cell_value(i,1))
-				events.append(event_messages[event])
-				eventMsg.append(events)
-			except:
-				pass
-	storageEvents(storage)
-	return eventMsg
-
-def getExcelTest(name):
-	wb = xlrd.open_workbook(name)
-	table = wb.sheets()[0]
-	col_data = table.col_values(9)
-	eventMsg = []
-	len_data = len(col_data)
-	for i in range(1,len_data):
-		events = []
-		if col_data[i] != u"/服务器/Windows":
-			event = table.cell_value(i,10)
-			try:
-				events.append(table.cell_value(i,1))
-				events.append(event_messages[event])
-				eventMsg.append(events)
-			except:
-				pass
-	return eventMsg
-
-def getAllExcel():
-	Msg = []
-	for i in range(1,17):
-		print i
-		if i != 7 and i != 5:
-			name = 'event' + str(i) + '.xls'
-			eventMsg = getExcel(name)
-			Msg = Msg + eventMsg
-		else:
-			pass
-	return Msg
-
 def get_events_dict():
 	events_dict = {}
 	count = 0
@@ -155,31 +104,89 @@ def get_dict_events():
 		count = count + 1
 	return dict_events
 
+def setEvents(name):
+	wb = xlrd.open_workbook(name)
+	table = wb.sheets()[0]
+	col_data = table.col_values(9)
+	eventMsg = []
+	len_data = len(col_data)
+	storage = []
+	for i in range(1,len_data):
+		events = []
+		if col_data[i] == u"/安全设备/防火墙" or col_data[i] == u"/安全设备/入侵检测保护系统":
+			event = table.cell_value(i,10)
+			try:
+				storage.append(event)
+			except:
+				pass
+	storageEvents(storage)
+
+def getExcel(name):
+	wb = xlrd.open_workbook(name)
+	table = wb.sheets()[0]
+	col_data = table.col_values(9)
+	eventMsg = []
+	len_data = len(col_data)
+	event_msgs = get_dict_events()
+	for i in range(1,len_data):
+		events = []
+		if col_data[i] == u"/安全设备/防火墙" or col_data[i] == u"/安全设备/入侵检测保护系统":
+			event = table.cell_value(i,10)
+			try:
+				events.append(table.cell_value(i,1))
+				events.append(event_msgs[event])
+				eventMsg.append(events)
+			except:
+				pass
+	return eventMsg
+
+def getAllExcel():
+	Msg = []
+	for i in range(1,17):
+		print i
+		if i != 7 and i != 5:
+			name = 'event' + str(i) + '.xls'
+			eventMsg = getExcel(name)
+			Msg = Msg + eventMsg
+		else:
+			pass
+	return Msg
+
 def manageData(name,minSupport = 0.2,minConf = 0.1):
 	eventMsg = getExcel(name)
 	SetData = setData(eventMsg)
+	events_dict = get_events_dict()
 	L,suppData = apriori.apriori(SetData,float(minSupport))
 	#aprioriall.aprioriall(SetData,float(minSupport))
 	rules = apriori.generateRules(L,suppData,minConf=0.1)
 	key = []
 	value = []
 	results = []
-	for (k,v) in suppData.items():
+	for (ks,v) in suppData.items():
 		try:
-			key.append(events_id[str(k)])
+			event_name = ''
+			for k in ks:
+				event_name = event_name+events_dict[k]+' '
+			key.append(event_name)
 			value.append(v)
 		except:
 			pass
 	for rule in rules:
 		events = []
 		for event in rule[0:-1]:
-			events.append(events_id[str(event)])
+			try:
+				k_name = ''
+				for k in event:
+					k_name = k_name + events_dict[k] + ' '
+				events.append(k_name)
+			except:
+				pass
 		events.append(rule[-1])
 		results.append(events)
 	return key,value,results
 
 def getMinSupport(name,minSupport,minConf):
-	eventMsg = getExcelTest(name)
+	eventMsg = getExcel(name)
 	SetData = setData(eventMsg)
 	L,suppData = apriori.apriori(SetData,minSupport)
 	rules = apriori.generateRules(L,suppData,minConf)
