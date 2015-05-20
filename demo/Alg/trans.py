@@ -137,6 +137,23 @@ def getAllExcel():
 			pass
 	return Msg
 
+def get_events_dict():
+	events_dict = {}
+	count = 0
+	events = Events.objects.all()
+	for event in events:
+		events_dict[count] = event.name
+		count = count + 1
+	return events_dict
+
+def get_dict_events():
+	dict_events = {}
+	count = 0
+	events = Events.objects.all()
+	for event in events:
+		dict_events[event.name] = count
+		count = count + 1
+	return dict_events
 
 def manageData(name,minSupport = 0.2,minConf = 0.1):
 	eventMsg = getExcel(name)
@@ -165,7 +182,6 @@ def getMinSupport(name,minSupport,minConf):
 	eventMsg = getExcelTest(name)
 	SetData = setData(eventMsg)
 	L,suppData = apriori.apriori(SetData,minSupport)
-	print L,suppData
 	rules = apriori.generateRules(L,suppData,minConf)
 	return len(rules)
 
