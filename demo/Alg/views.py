@@ -349,11 +349,16 @@ def quantitative(request):
 		name = set_cache(attr_result)
 		return HttpResponse(simplejson.dumps({'message':attr_result,'name':name}))
 
+def read_cache(name):
+	fp = open(name,'rb')
+	buf = fp.read()
+	fp.close()
+	return buf
+
 def exportLog(request,name):
 	try:
-		buf = readfile(name)
-		cmd = 'rm -rf ' + name
-		os.system(cmd)
+		buf = read_cache(name)
+		
 		name = name.encode('utf8')
 		response = HttpResponse(buf,mimetype = 'application/octet-stream')
 		response['Content-Disposition'] = 'attachment;filename=%s' % name

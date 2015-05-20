@@ -40,7 +40,9 @@
 		</div>
 	</div>
 </div>
-<div class="dialog"></div>
+<div class="dialog">
+	
+</div>
 
 <script type="text/javascript" src="{{STATIC_URL}}js/jquery.js"></script>
 <script type="text/javascript" src="{{STATIC_URL}}js/swfobject.js"></script>
@@ -104,9 +106,11 @@
 
 
  			$(".change1").click(function(){
- 				var str = $('<input type="text" /><span class="diaok">OK</span>');
+ 				$(".dialog").empty();
+ 				var str = $('<span class="cloasedia">X</span><input type="text" /><span class="diaok">OK</span>');
  				$(".dialog").append(str);
- 				$(".dialog").css("width",600)
+ 				$(".dialog").css("width",600);
+ 				$(".cloasedia").show();
  				var id= $(this).attr("dataid");
  				
  				$(".diaok").click(function(){
@@ -127,6 +131,10 @@
 
  						}
  					})
+ 				})
+
+ 				$(".cloasedia").click(function(){
+ 					$(".dialog").empty()
  				})
  				
  			})
@@ -228,7 +236,8 @@
 			}
 
 			$(".change2").click(function(){
-				var str = $('<input type="text" /><span class="diaok">OK</span>');
+				$(".dialog").empty();
+				var str = $('<span class="cloasedia">X</span><input type="text" /><span class="diaok">OK</span>');
 				$(".dialog").append(str);
 				$(".dialog").css("width",600)
 				var id= $(this).attr("dataid");
@@ -252,6 +261,10 @@
 						}
 					})
 				})
+
+				$(".cloasedia").click(function(){
+ 					$(".dialog").empty()
+ 				})
 				
 			})
 
