@@ -6,6 +6,7 @@ from django.conf.urls import patterns, include, url
 import User
 import settings
 from  Alg import views
+from django.views.decorators.csrf import csrf_exempt
 # Uncomment the next two lines to enable the admin:
 #from django.contrib import admin
 #admin.autodiscover()
@@ -35,7 +36,7 @@ urlpatterns = patterns('',
     url(r'^importdata/$','Alg.views.importData'),
     url(r'^sequence$',views.SafeManagerList.as_view()),
     url(r'^events$',views.EventsList.as_view()),
-    url(r'^sequence/(\w+)$',views.SafeManagerDetail.as_view()),
+    url(r'^sequence/(\w+)$',csrf_exempt(views.SafeManagerDetail.as_view())),
     url(r'^events/(\w+)$',views.EventDetails.as_view()),
     url(r'^quantitative/$','Alg.views.quantitative'),
     url(r'^export/([a-zA-Z0-9.]+)$','Alg.views.exportLog'),

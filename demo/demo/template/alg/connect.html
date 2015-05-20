@@ -70,7 +70,8 @@
 </div>
 
 <div class="show-guanlian">
-	<table class="table">	</table>	
+    <a href="javascript:;" class="exportguan">导出</a>
+	<table class="table"></table>	
 	<a href="javascript:void(0);" id="prev">上一页</a>	
 	<a href="javascript:void(0);" id="next">下一页</a>
 </div>
@@ -264,6 +265,7 @@ $(".handle-now").click(function(){
                 			results : chartresults
                 		},
                 		success : function(data){
+                            window.exportname = data.name;
                 			$(".show-guanlian").show();
                 			var data = data.message;
                 			var  d = [];
@@ -346,6 +348,18 @@ $(".handle-now").click(function(){
         }) 
     
 	});
+
+    $(".exportguan").click(function(){
+        $.ajax({
+            url : "/export/"+ exportname,
+            type : "GET",
+            success : function(){
+                window.open("/export/"+ exportname); 
+            }
+        })
+    })
+
+
     $(".import").click(function(){
         name = $(this).attr("dataName");
         fileName = "demo/media/upload/" + name;

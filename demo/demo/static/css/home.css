@@ -150,11 +150,33 @@
   display: block;
 }
 .dialog .diaok {
+ display: block;
+ width: 50px;
+ font-size: 24px;
+ margin: auto;
+ text-align: center;
+ margin: 30px auto;
+ width: 80px;
+ background: rgb(11, 116, 28);
+}
+.cloasedia {
+  position: absolute;
+  right: 0;
+  width: 40px;
+  height: 40px;
+}
+
+.exportguan{
+    width: 80px;
   display: block;
-  width: 50px;
-  font-size: 24px;
   margin: auto;
+  height: 30px;
+  background: #158438;
   text-align: center;
+  line-height: 30px;
+  color: #fff;
+  margin-bottom: 30px;
+  text-decoration: none;
 }
 .descp p{
     display: inline-block;
