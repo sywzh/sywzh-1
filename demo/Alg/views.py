@@ -352,6 +352,8 @@ def quantitative(request):
 def exportLog(request,name):
 	try:
 		buf = readfile(name)
+		cmd = 'rm -rf ' + name
+		os.system(cmd)
 		name = name.encode('utf8')
 		response = HttpResponse(buf,mimetype = 'application/octet-stream')
 		response['Content-Disposition'] = 'attachment;filename=%s' % name
