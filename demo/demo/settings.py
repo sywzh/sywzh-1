@@ -168,3 +168,5 @@ LOGGING = {
         },
     }
 }
+
+GLOBAL_CSRF_CHECK = True

@@ -38,7 +38,7 @@ urlpatterns = patterns('',
     url(r'^sequence/(\w+)$',views.SafeManagerDetail.as_view()),
     url(r'^events/(\w+)$',views.EventDetails.as_view()),
     url(r'^quantitative/$','Alg.views.quantitative'),
-    url(r'^export/([a-zA-Z0-9.]+)','Alg.views.exportLog'),
+    url(r'^export/([a-zA-Z0-9.]+)$','Alg.views.exportLog'),
     # url(r'^demo/', include('demo.foo.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
