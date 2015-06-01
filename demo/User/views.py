@@ -35,7 +35,8 @@ def RegisterHd(request):
 	email = request.POST.get("email")
 	password = request.POST.get("password")
 	try:
-		op = User(username = username,email = email,password = password)
+		op = User(username = username,email = email)
+		op.set_password(password)
 		op.save()
 		return HttpResponse(simplejson.dumps({'message':'ok'}))
 	except:

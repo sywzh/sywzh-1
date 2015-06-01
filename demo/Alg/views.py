@@ -131,22 +131,6 @@ def handleFile(filename,username,getvalue):
 	op = WarnLog(user_id = username.id,name = filename)
 	op.save()
 	return 0
-'''
-def handleData(request):
-	if not request.is_ajax() or request.method != 'POST':
-		raise Http404
-	filename = request.POST.get("filename")
-	getvalue = request.POST.get("getvalue")
-	username = request.user
-	#if WarnLog.objects.filter(user_id = username.id,name = filename).count()>0:
-	#	return HttpResponse(simplejson.dumps({'message':'uploaded'}))
-	flag = handleFile(filename,username,getvalue)
-	if flag == "1":
-		return HttpResponse(simplejson.dumps({'message':'attrerror'}))
-	elif flag == "2":
-		return HttpResponse(simplejson.dumps({'message':'formerror'}))		
-	return HttpResponse(simplejson.dumps({'message':'ok'}))
-'''
 
 def handleFile(name,user):
 	try:
