@@ -223,6 +223,7 @@ def traversal(attrs,name,value = 0.94,time = 0.3,srcip=0.3,dstip=0.3,srcport=0.0
 	result = []
 	result_attrs = []
 	data = xlrd.open_workbook(name)
+
 	table = data.sheets()[0]
 	for attr in attrs:
 		connect = []
@@ -237,9 +238,9 @@ def traversal(attrs,name,value = 0.94,time = 0.3,srcip=0.3,dstip=0.3,srcport=0.0
 					table.row_values(i+flag)
 				except:
 					continue
-				if(attr[j] in table.row_values(i+flag)):
+				if attr[j] in table.row_values(i+flag):
 					flag = flag + 1
-				if (flag == len(attr)):
+				if flag == len(attr):
 					cont = cont + 1
 					for k in range(i,i+flag):
 						similiar.append(table.row_values(k))

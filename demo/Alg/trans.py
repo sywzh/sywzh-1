@@ -166,7 +166,7 @@ def manageData(name,minSupport = 0.2,minConf = 0.1):
 		try:
 			event_name = ''
 			for k in ks:
-				event_name = event_name+events_dict[k]+' '
+				event_name = event_name+events_dict[k]
 			key.append(event_name)
 			value.append(v)
 		except:
@@ -177,7 +177,7 @@ def manageData(name,minSupport = 0.2,minConf = 0.1):
 			try:
 				k_name = ''
 				for k in event:
-					k_name = k_name + events_dict[k] + ' '
+					k_name = k_name + events_dict[k]
 				events.append(k_name)
 			except:
 				pass
