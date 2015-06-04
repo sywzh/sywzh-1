@@ -98,6 +98,7 @@
  					//alert(i);
  					$("#prev1").show();
  					var now = (countPage-1)*9+i+1;
+ 					alert(now);
  					var str = $('<tr><td>'+data.data[now].name+'</td><td>'+data.data[now].attack_sequence+'</td><td>'+data.data[now].support+'</td><td>'+data.data[now].attack_name+'</td><td>'+data.data[now].time+'</td><td><a dataid="'+data.data[now].id+'" class="change1">修改</a><a dataid="'+data.data[i].id+'" class="delete1">删除</a></td></tr>');
  					$(".log-table1 table").append(str);
  				}
@@ -220,7 +221,8 @@
 						$(".handle table").append(str);
 					}
 				}else{
-					for(var i=0;i<9;i++){
+					for(var i=0;i<10;i++){
+					//alert(i);
 					$("#prev").show();
 					var now = (countPage-1)*9+i+1;
 					var str = $('<tr><td>'+data.data[now].name+'</td><td><a dataid="'+data.data[i].id+'" class="change2">修改</a><a dataid="'+data.data[i].id+'" class="delete2">删除</a></td></tr>');

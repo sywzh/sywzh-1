@@ -9,9 +9,10 @@ body {
 }
 
 .basetop{
-	height: 84px;
-	min-width: 1200px;
-	background: rgb(36,41,44);
+    height: 84px;
+  margin: 0 auto;
+  min-width: 1600px;
+  background: rgb(36,41,44);
 }
 
 
@@ -24,12 +25,12 @@ body {
 }
 .menu {
     /*给他设置一个宽度，不要让它超出*/
-    width:870px;
-    left: 78px;
-    position: relative;
-    top:-20px;
-    font-size: 29px;
-    margin: -18px 50px 0px 590px;
+      width: 870px;
+  display: inline-block;
+  left: 117px;
+  position: relative;
+  margin-top: 22px;
+  font-size: 26px;
 }
 .main {
 	/*main blcok*/
