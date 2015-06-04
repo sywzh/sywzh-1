@@ -84,18 +84,17 @@
  			$.each(data.data,function(i,con){
  				d.push(data.data[i]);
  			});
- 			function show(){
+ 			function show1(){
  				$(".log-table1 table").empty();
  				var tr = $('<tr><th>文件名</th><th>攻击序列</th><th>支持度</th><th>攻击名</th><th>时间</th><th class="doSth">操作</th></tr>');
  				$(".log-table1 table").append(tr);
- 				if(countPage <= page){
-
+ 				if(countPage == 1){
  					for(var i=0;i<9;i++){
  						var str = $('<tr><td>'+data.data[i].name+'</td><td>'+data.data[i].attack_sequence+'</td><td>'+data.data[i].support+'</td><td>'+data.data[i].attack_name+'</td><td>'+data.data[i].time+'</td><td><a dataid="'+data.data[i].id+'" class="change1">修改</a><a dataid="'+data.data[i].id+'" class="delete1">删除</a></td></tr>');
  						$(".log-table1 table").append(str);
  					}
  				}else{
- 					for(var i=0;i<d.length-(page-1)*9;i++){
+ 					for(var i=0;i<10;i++){
  					//alert(i);
  					$("#prev1").show();
  					var now = (countPage-1)*9+i+1;
@@ -161,11 +160,11 @@
  		$("#prev1").click(function(){
  			countPage--;
  			if(countPage != 1){
- 				show();
+ 				show1();
  				$("#next1").show();
  				$("#next1").show();
  			}else if(countPage == 1){
- 				show();
+ 				show1();
  				$("#next1").show();
  				$("#prev1").hide();
  			} else if(countPage !== page){
@@ -180,19 +179,14 @@
  			if(countPage == page){
  				$("#next1").hide();
  				$("#prev1").show();
- 				show();
+ 				show1();
  			}else{
- 				show();
+ 				show1();
  				$("#prev1").show();
  				console.log(countPage);
  			}
  		})
- 		show();
-
-			/*$.each(data.data,function(i,con){
-				var str = $('<tr><td>'+data.data[i].name+'</td><td>'+data.data[i].attack_sequence+'</td><td>'+data.data[i].support+'</td><td>'+data.data[i].attack_name+'</td><td>'+data.data[i].time+'</td><td><a>修改</a><a>删除</a></td></tr>');
-				$(".bg-set1 table").append(str);
-			})*/
+ 			show1();
 		},
 		error : function(){
 			alert("network error!")
@@ -226,8 +220,7 @@
 						$(".handle table").append(str);
 					}
 				}else{
-					for(var i=0;i<d.length-(page-1)*9;i++){
-					//alert(i);
+					for(var i=0;i<9;i++){
 					$("#prev").show();
 					var now = (countPage-1)*9+i+1;
 					var str = $('<tr><td>'+data.data[now].name+'</td><td><a dataid="'+data.data[i].id+'" class="change2">修改</a><a dataid="'+data.data[i].id+'" class="delete2">删除</a></td></tr>');
@@ -315,7 +308,6 @@
 			}else{
 				show();
 				$("#prev").show();
-				console.log(countPage);
 			}
 		})
 		show();
