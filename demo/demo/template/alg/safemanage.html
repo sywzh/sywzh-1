@@ -106,6 +106,7 @@
 
 
  			$(".change1").click(function(){
+ 				alert(1);
  				$(".dialog").empty();
  				var str = $('<span class="cloasedia">X</span><input type="text" /><span class="diaok">OK</span>');
  				$(".dialog").append(str);
@@ -150,6 +151,9 @@
  						} else {
  							alert("error")
  						}
+ 					},
+ 					error : function(){
+ 						alert('error!');
  					}
  				})
  				
